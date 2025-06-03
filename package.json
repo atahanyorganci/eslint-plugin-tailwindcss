@@ -1,6 +1,6 @@
 {
-  "name": "eslint-plugin-tailwindcss",
-  "version": "3.18.0",
+  "name": "@yorganci/eslint-plugin-tailwindcss",
+  "version": "0.0.0",
   "description": "Rules enforcing best practices while using Tailwind CSS",
   "keywords": [
     "eslint",
@@ -9,13 +9,16 @@
     "tailwind",
     "tailwindcss"
   ],
-  "author": "François Massart",
+  "author": {
+    "name": "Atahan Yorgancı",
+    "email": "atahanyorganci@hotmail.com"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/francoismassart/eslint-plugin-tailwindcss"
+    "url": "https://github.com/atahanyorganci/eslint-plugin-tailwindcss"
   },
-  "homepage": "https://github.com/francoismassart/eslint-plugin-tailwindcss",
-  "bugs": "https://github.com/francoismassart/eslint-plugin-tailwindcss/issues",
+  "homepage": "https://github.com/atahanyorganci/eslint-plugin-tailwindcss",
+  "bugs": "https://github.com/atahanyorganci/eslint-plugin-tailwindcss/issues",
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run test:base && npm run test:integration",
