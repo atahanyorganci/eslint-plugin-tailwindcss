@@ -17,12 +17,21 @@ const classNamesOrder = {
 	create(context) {
 		return {
 			JSXAttribute(node: JSXAttribute) {
+				const classRegex = /^class(?:Name)?$/;
+				let nodeName: string;
+				if (typeof node.name.name === "string") {
+					nodeName = node.name.name;
+				}
+				else {
+					nodeName = node.name.name.name;
+				}
+
 				// Check if this is a className attribute
 				if (
-					node.name.name === "className" &&
-					node.value &&
-					node.value.type === "Literal" &&
-					typeof node.value.value === "string"
+					classRegex.test(nodeName)
+					&& node.value
+					&& node.value.type === "Literal"
+					&& typeof node.value.value === "string"
 				) {
 					context.report({
 						node,
