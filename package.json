@@ -1,65 +1,70 @@
 {
-  "name": "@yorganci/eslint-plugin-tailwindcss",
-  "version": "0.0.0",
-  "description": "Rules enforcing best practices while using Tailwind CSS",
-  "keywords": [
-    "eslint",
-    "eslintplugin",
-    "eslint-plugin",
-    "tailwind",
-    "tailwindcss"
-  ],
-  "type": "module",
-  "author": {
-    "name": "Atahan Yorgancı",
-    "email": "atahanyorganci@hotmail.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/atahanyorganci/eslint-plugin-tailwindcss"
-  },
-  "homepage": "https://github.com/atahanyorganci/eslint-plugin-tailwindcss",
-  "bugs": "https://github.com/atahanyorganci/eslint-plugin-tailwindcss/issues",
-  "main": "lib/index.js",
-  "scripts": {
-    "check": "tsc",
-    "check:watch": "tsc --watch",
-    "test": "npm run test:base && npm run test:integration",
-    "test:base": "mocha \"tests/lib/**/*.js\"",
-    "test:integration": "mocha \"tests/integrations/*.js\" --timeout 60000"
-  },
-  "files": [
-    "lib"
-  ],
-  "peerDependencies": {
-    "eslint": ">=9.0.0",
-    "tailwindcss": "^3.4.0"
-  },
-  "dependencies": {
-    "fast-glob": "^3.2.5",
-    "postcss": "^8.4.4"
-  },
-  "devDependencies": {
-    "@angular-eslint/template-parser": "^19.0.0",
-    "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.3",
-    "@tailwindcss/line-clamp": "^0.4.2",
-    "@tailwindcss/typography": "^0.5.8",
-    "@types/estree": "^1.0.7",
-    "@types/estree-jsx": "^1.0.5",
-    "@typescript-eslint/parser": "^8.33.1",
-    "autoprefixer": "^10.4.0",
-    "daisyui": "^2.6.4",
-    "eslint": "^9.0.0",
-    "mocha": "^10.2.0",
-    "semver": "^7.6.0",
-    "tailwindcss": "^3.4.0",
-    "typescript": "^5.8.3",
-    "vue-eslint-parser": "^9.4.2"
-  },
-  "packageManager": "npm@10.2.5+sha256.8002e3e7305d2abd4016e1368af48d49b066c269079eeb10a56e7d6598acfdaa",
-  "engines": {
-    "node": ">=18.12.0"
-  },
-  "license": "MIT"
+	"name": "@yorganci/eslint-plugin-tailwindcss",
+	"type": "module",
+	"version": "0.0.0",
+	"packageManager": "npm@10.2.5+sha512.957759eed8ad10df021f960993d0bf698454f49783c50e1df2bc08203b2f1f748c8cb8c74ee901d8216cb4c881df4cd7b38bc2acf376587e9c0ead721c178903",
+	"description": "Rules enforcing best practices while using Tailwind CSS",
+	"author": {
+		"name": "Atahan Yorgancı",
+		"email": "atahanyorganci@hotmail.com"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/atahanyorganci/eslint-plugin-tailwindcss",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/atahanyorganci/eslint-plugin-tailwindcss"
+	},
+	"bugs": "https://github.com/atahanyorganci/eslint-plugin-tailwindcss/issues",
+	"keywords": [
+		"eslint",
+		"eslintplugin",
+		"eslint-plugin",
+		"tailwind",
+		"tailwindcss"
+	],
+	"main": "lib/index.js",
+	"files": [
+		"lib"
+	],
+	"engines": {
+		"node": ">=18.12.0"
+	},
+	"scripts": {
+		"check": "tsc",
+		"check:watch": "tsc --watch",
+		"lint": "eslint .",
+		"lint:fix": "eslint --fix .",
+		"test": "npm run test:base && npm run test:integration",
+		"test:base": "mocha \"tests/lib/**/*.js\"",
+		"test:integration": "mocha \"tests/integrations/*.js\" --timeout 60000"
+	},
+	"peerDependencies": {
+		"eslint": ">=9.0.0",
+		"tailwindcss": "^3.4.0"
+	},
+	"dependencies": {
+		"fast-glob": "^3.2.5",
+		"postcss": "^8.4.4"
+	},
+	"devDependencies": {
+		"@angular-eslint/template-parser": "^19.0.0",
+		"@antfu/eslint-config": "^4.13.3",
+		"@tailwindcss/aspect-ratio": "^0.4.2",
+		"@tailwindcss/forms": "^0.5.3",
+		"@tailwindcss/line-clamp": "^0.4.2",
+		"@tailwindcss/typography": "^0.5.8",
+		"@types/estree": "^1.0.7",
+		"@types/estree-jsx": "^1.0.5",
+		"@typescript-eslint/parser": "^8.33.1",
+		"autoprefixer": "^10.4.0",
+		"daisyui": "^2.6.4",
+		"eslint": "^9.0.0",
+		"eslint-plugin-format": "^1.0.1",
+		"jiti": "^2.4.2",
+		"mocha": "^10.2.0",
+		"semver": "^7.6.0",
+		"tailwindcss": "^3.4.0",
+		"typescript": "^5.8.3",
+		"vue-eslint-parser": "^9.4.2"
+	}
 }
