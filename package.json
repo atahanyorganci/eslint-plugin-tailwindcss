@@ -22,14 +22,22 @@
 		"tailwind",
 		"tailwindcss"
 	],
-	"main": "lib/index.js",
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.mjs"
+		},
+		"./package.json": "./package.json"
+	},
 	"files": [
-		"lib"
+		"dist"
 	],
 	"engines": {
 		"node": ">=18.12.0"
 	},
 	"scripts": {
+		"build": "unbuild",
 		"check": "tsc",
 		"check:watch": "tsc --watch",
 		"lint": "eslint .",
@@ -57,6 +65,7 @@
 		"jiti": "^2.4.2",
 		"tailwindcss": "^4.0.0",
 		"typescript": "^5.8.3",
+		"unbuild": "^3.5.0",
 		"vitest": "^3.2.1"
 	}
 }
