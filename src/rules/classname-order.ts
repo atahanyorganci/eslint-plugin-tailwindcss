@@ -1,38 +1,15 @@
 import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import { getTailwindConfig } from "../prettier/config.js";
+import { reorderClasses } from "../prettier/index.js";
 
 function arraysEqual<T>(a: T[], b: T[]): boolean {
-	return a.length === b.length && a.every((val, index) => val === b[index]);
+	return a.length === b.length && a.every((value, i) => value === b[i]);
 }
 
 const tailwindConfig = await getTailwindConfig({
 	stylesheet: "src/styles/globals.css",
 });
-
-function bigSign(bigIntValue: bigint) {
-	return Number(bigIntValue > 0n) - Number(bigIntValue < 0n);
-}
-
-function reorderClasses(classList: string[]) {
-	const orderedClasses = tailwindConfig.getClassOrder(classList);
-
-	return orderedClasses.sort(([nameA, a], [nameZ, z]) => {
-		// Move `...` to the end of the list
-		if (nameA === "..." || nameA === "…")
-			return 1;
-		if (nameZ === "..." || nameZ === "…")
-			return -1;
-
-		if (a === z)
-			return 0;
-		if (a === null)
-			return -1;
-		if (z === null)
-			return 1;
-		return bigSign(a - z);
-	}).map(([className]) => className);
-}
 
 const classNamesOrder = {
 	meta: {
@@ -67,7 +44,7 @@ const classNamesOrder = {
 					&& typeof node.value.value === "string"
 				) {
 					const classes = node.value.value.split(" ").filter(Boolean);
-					const orderedClasses = reorderClasses(classes);
+					const orderedClasses = reorderClasses(tailwindConfig, classes);
 
 					if (!arraysEqual(classes, orderedClasses)) {
 						context.report({
