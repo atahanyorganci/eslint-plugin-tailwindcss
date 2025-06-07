@@ -19,6 +19,11 @@ export default tseslint.config(
 			"react-refresh": reactRefresh,
 			"tailwindcss": tailwindcss,
 		},
+		settings: {
+			tailwindcss: {
+				stylesheet: "./src/styles/globals.css",
+			},
+		},
 		rules: {
 			...reactHooks.configs.recommended.rules,
 			"react-refresh/only-export-components": [

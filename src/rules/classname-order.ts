@@ -1,6 +1,7 @@
 import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import { reorderClasses } from "../prettier/index.js";
+import { getSettings } from "../util.js";
 
 function arraysEqual<T>(a: T[], b: T[]): boolean {
 	return a.length === b.length && a.every((value, i) => value === b[i]);
@@ -20,9 +21,11 @@ const classNamesOrder = {
 		fixable: "code",
 	},
 	create(context) {
+		const { stylesheet, classRegex: classRegexString } = getSettings(context);
+
 		return {
 			JSXAttribute(node: JSXAttribute) {
-				const classRegex = /^class(?:Name)?$/;
+				const classRegex = new RegExp(classRegexString);
 				let nodeName: string;
 				if (typeof node.name.name === "string") {
 					nodeName = node.name.name;
@@ -40,7 +43,7 @@ const classNamesOrder = {
 				) {
 					const classes = node.value.value.split(" ").filter(Boolean);
 					const orderedClasses = reorderClasses({
-						stylesheet: "src/styles/globals.css",
+						stylesheet,
 						classes,
 					});
 
