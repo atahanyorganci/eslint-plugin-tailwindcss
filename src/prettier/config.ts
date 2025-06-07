@@ -9,7 +9,7 @@ import postcss from "postcss";
 import postcssImport from "postcss-import";
 import { resolveCssFrom, resolveJsFrom } from "./resolve.js";
 
-export interface TailwindConfigOptions {
+export interface TailwindConfigParams {
 	stylesheet: string;
 	packageName?: string;
 }
@@ -18,7 +18,7 @@ export interface DesignSystem {
 	getClassOrder: (classes: string[]) => [string, bigint | null][];
 }
 
-export async function getTailwindConfig({ stylesheet, packageName }: TailwindConfigOptions): Promise<DesignSystem> {
+export async function getTailwindConfig({ stylesheet, packageName }: TailwindConfigParams): Promise<DesignSystem> {
 	const baseDir = process.cwd();
 	const entryPoint = path.resolve(baseDir, stylesheet);
 

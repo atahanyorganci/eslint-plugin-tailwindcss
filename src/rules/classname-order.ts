@@ -1,15 +1,10 @@
 import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
-import { getTailwindConfig } from "../prettier/config.js";
 import { reorderClasses } from "../prettier/index.js";
 
 function arraysEqual<T>(a: T[], b: T[]): boolean {
 	return a.length === b.length && a.every((value, i) => value === b[i]);
 }
-
-const tailwindConfig = await getTailwindConfig({
-	stylesheet: "src/styles/globals.css",
-});
 
 const classNamesOrder = {
 	meta: {
@@ -44,7 +39,10 @@ const classNamesOrder = {
 					&& typeof node.value.value === "string"
 				) {
 					const classes = node.value.value.split(" ").filter(Boolean);
-					const orderedClasses = reorderClasses(tailwindConfig, classes);
+					const orderedClasses = reorderClasses({
+						stylesheet: "src/styles/globals.css",
+						classes,
+					});
 
 					if (!arraysEqual(classes, orderedClasses)) {
 						context.report({
