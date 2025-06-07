@@ -2,5 +2,13 @@ import { defineBuildConfig } from "unbuild";
 
 export default defineBuildConfig({
 	failOnWarn: false,
-	entries: ["./src/index.ts"],
+	entries: [
+		{
+			builder: "mkdist",
+			input: "./src",
+			pattern: ["**/*.ts", "!**/*.spec.ts"],
+			declaration: true,
+			ext: "js",
+		},
+	],
 });
