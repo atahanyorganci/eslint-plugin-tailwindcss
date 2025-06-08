@@ -1,0 +1,33 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"globalDependencies": [
+		"package.json",
+		"pnpm-lock.yaml",
+		"tsconfig.json"
+	],
+	"tasks": {
+		"build": {
+			"dependsOn": ["check", "lint"],
+			"inputs": [
+				"src/**/*.ts",
+				"!src/**/*.spec.ts"
+			],
+			"outputs": ["dist/**/*"]
+		},
+		"check": {
+			"inputs": ["src/**/*"]
+		},
+		"check:watch": {
+			"cache": false,
+			"persistent": true
+		},
+		"ci": {
+			"dependsOn": ["build", "test"]
+		},
+		"lint": {},
+		"lint:fix": {
+			"cache": false
+		},
+		"test": {}
+	}
+}
