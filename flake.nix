@@ -36,8 +36,9 @@
               corepack install -g ${packageManager}
             '';
             buildInputs = with pkgs; [
-              pnpm-shim
               nodejs-slim
+              pnpm-shim
+              just
             ];
           };
         });
