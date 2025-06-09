@@ -1,6 +1,5 @@
 import type { ESLint } from "eslint";
 import classnameOrder from "./rules/classname-order.js";
-import noNegativeArbitraryValues from "./rules/no-negative-arbitrary-values.js";
 
 const plugin = {
 	meta: {
@@ -10,7 +9,6 @@ const plugin = {
 	},
 	rules: {
 		"classname-order": classnameOrder,
-		"no-negative-arbitrary-value": noNegativeArbitraryValues,
 	},
 } satisfies ESLint.Plugin;
 
