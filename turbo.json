@@ -28,7 +28,9 @@
 		"lint:fix": {
 			"cache": false
 		},
-		"test": {},
+		"test": {
+			"dependsOn": ["build"]
+		},
 		"test:watch": {
 			"cache": false,
 			"persistent": true
