@@ -7,7 +7,7 @@ function arraysEqual<T>(a: T[], b: T[]): boolean {
 	return a.length === b.length && a.every((value, i) => value === b[i]);
 }
 
-const classNamesOrder = {
+const classnameOrder = {
 	meta: {
 		type: "suggestion",
 		docs: {
@@ -62,4 +62,4 @@ const classNamesOrder = {
 	},
 } satisfies Rule.RuleModule;
 
-export default classNamesOrder;
+export default classnameOrder;

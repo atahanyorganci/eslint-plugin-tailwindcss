@@ -1,5 +1,5 @@
 import type { ESLint } from "eslint";
-import classNameOrder from "./rules/classname-order.js";
+import classnameOrder from "./rules/classname-order.js";
 import noNegativeArbitraryValues from "./rules/no-negative-arbitrary-values.js";
 
 const plugin = {
@@ -9,7 +9,7 @@ const plugin = {
 		namespace: "eslint-plugin-tailwindcss",
 	},
 	rules: {
-		"classname-order": classNameOrder,
+		"classname-order": classnameOrder,
 		"no-negative-arbitrary-value": noNegativeArbitraryValues,
 	},
 } satisfies ESLint.Plugin;
