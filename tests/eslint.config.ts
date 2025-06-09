@@ -23,6 +23,7 @@ const config = {
 	},
 	rules: {
 		"tailwindcss/classname-order": "error",
+		"tailwindcss/no-duplicate-classnames": "error",
 	},
 } satisfies Linter.Config;
 
