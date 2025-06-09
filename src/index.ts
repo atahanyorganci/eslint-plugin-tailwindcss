@@ -4,7 +4,7 @@ import classnameOrder from "./rules/classname-order.js";
 const plugin = {
 	meta: {
 		name: "@yorganci/eslint-plugin-tailwindcss",
-		version: "0.0.1",
+		version: "0.0.2",
 		namespace: "eslint-plugin-tailwindcss",
 	},
 	rules: {
