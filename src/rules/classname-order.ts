@@ -11,7 +11,7 @@ const classnameOrder = {
 	meta: {
 		type: "suggestion",
 		docs: {
-			category: "Stylistic Issues",
+			category: "Best Practices",
 			description: "Enforce consistent order of the TailwindCSS classes.",
 			recommended: true,
 		},
