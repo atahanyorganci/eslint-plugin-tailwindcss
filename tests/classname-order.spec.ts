@@ -1,21 +1,26 @@
-import { describe, beforeAll, it, expect } from "vitest";
-import { ESLint } from "eslint";
 import path from "node:path";
+import { ESLint } from "eslint";
+import { beforeAll, describe, expect, it } from "vitest";
 
-describe("TailwindCSS ESLint Plugin Integration", () => {
+describe("`classname-order`", () => {
 	let eslint: ESLint;
 
 	beforeAll(() => {
 		eslint = new ESLint({
-			overrideConfigFile: path.resolve(import.meta.dirname, "eslint.config.ts")
+			overrideConfigFile: path.resolve(import.meta.dirname, "eslint.config.ts"),
+			baseConfig: {
+				rules: {
+					"tailwindcss/classname-order": "error",
+				},
+			},
 		});
 	});
 
-	it("should not report errors for valid TailwindCSS usage", async () => {
+	it("should not report an error with simple content", async () => {
 		const result = await eslint.lintText(`<div class="custom container box-content lg:box-border">Simple, basic</div>`, {
-			filePath: "test.tsx"
-		})
+			filePath: "test.tsx",
+		});
 		expect(result).toHaveLength(1);
-		expect(result[0].messages).toHaveLength(0)
+		expect(result[0].messages).toHaveLength(0);
 	});
 });

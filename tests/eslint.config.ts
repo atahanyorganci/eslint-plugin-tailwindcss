@@ -1,6 +1,6 @@
+import type { Linter } from "eslint";
+import path from "node:path";
 import tailwindcss from "@yorganci/eslint-plugin-tailwindcss";
-import { Linter } from "eslint";
-import path from "node:path"
 
 const config = {
 	files: ["**/*.{ts,tsx}"],
@@ -18,12 +18,8 @@ const config = {
 	},
 	settings: {
 		tailwindcss: {
-			stylesheet: path.resolve(import.meta.dirname, "./styles.css")
+			stylesheet: path.resolve(import.meta.dirname, "./styles.css"),
 		},
-	},
-	rules: {
-		"tailwindcss/classname-order": "error",
-		"tailwindcss/no-duplicate-classnames": "error",
 	},
 } satisfies Linter.Config;
 
