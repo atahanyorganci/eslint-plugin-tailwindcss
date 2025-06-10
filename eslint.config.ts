@@ -10,5 +10,5 @@ export default antfu({
 	rules: {
 		"antfu/no-top-level-await": "off",
 	},
-	ignores: ["lib", "tests"],
+	ignores: ["legacy"],
 });
