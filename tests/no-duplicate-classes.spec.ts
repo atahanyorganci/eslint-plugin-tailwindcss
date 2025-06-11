@@ -1,17 +1,14 @@
-import path from "node:path";
-import { ESLint } from "eslint";
+import type { ESLint } from "eslint";
 import { beforeAll, describe, expect, it } from "vitest";
+import { loadEslint } from "./fixtures/eslint.js";
 
 describe("`no-duplicate-classnames`", () => {
 	let eslint: ESLint;
 
 	beforeAll(() => {
-		eslint = new ESLint({
-			overrideConfigFile: path.resolve(import.meta.dirname, "eslint.config.ts"),
-			baseConfig: {
-				rules: {
-					"tailwindcss/no-duplicate-classnames": "error",
-				},
+		eslint = loadEslint({
+			rules: {
+				"tailwindcss/no-duplicate-classnames": "error",
 			},
 		});
 	});
