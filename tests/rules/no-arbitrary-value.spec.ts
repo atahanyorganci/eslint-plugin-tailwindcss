@@ -1,6 +1,6 @@
 import type { ESLint } from "eslint";
 import { beforeAll, describe, expect, it } from "vitest";
-import { loadEslint } from "./fixtures/eslint.js";
+import { loadEslint } from "../fixtures/eslint.js";
 
 describe("`no-arbitrary-value`", () => {
 	let eslint: ESLint;
