@@ -7,3 +7,5 @@ export interface ReorderParams extends TailwindConfigParams {
 }
 
 export const reorderClasses = createSyncFn<(options: ReorderParams) => string[]>(path.resolve(import.meta.dirname, "reorder-classes.async.js"));
+
+export const getTailwindClassList = createSyncFn<(options: TailwindConfigParams) => string[]>(path.resolve(import.meta.dirname, "get-tailwind-class-list.async.js"));
