@@ -4,7 +4,7 @@ function bigSign(bigIntValue: bigint) {
 	return Number(bigIntValue > 0n) - Number(bigIntValue < 0n);
 }
 
-export function reorderClasses(config: DesignSystem, classList: string[]) {
+export function reorderClassesAsync(config: DesignSystem, classList: string[]) {
 	const orderedClasses = config.getClassOrder(classList);
 
 	return orderedClasses
