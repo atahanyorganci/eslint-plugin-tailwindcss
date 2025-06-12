@@ -9,6 +9,7 @@ export default antfu({
 	},
 	rules: {
 		"antfu/no-top-level-await": "off",
+		"dot-notation": "off",
 	},
 	ignores: ["legacy"],
 });

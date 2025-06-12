@@ -8,6 +8,6 @@ export const SettingsSchema = z.object({
 export type Settings = z.infer<typeof SettingsSchema>;
 
 export function getSettings(context: Rule.RuleContext) {
-	const settings = SettingsSchema.parse(context.settings.tailwindcss);
+	const settings = SettingsSchema.parse(context.settings["tailwindcss"]);
 	return settings;
 }

@@ -47,7 +47,7 @@ const noUnnecessaryArbitraryValue = {
 
 					for (const [classname, { baseClassName }] of classlist) {
 						const match = baseClassName.match(/(?<baseClass>\w+)-\[(?<value>.+)\]/);
-						if (!match || !match.groups) {
+						if (!match || !match.groups || !match.groups["baseClass"] || !match.groups["value"]) {
 							continue;
 						}
 						const { baseClass, value } = match.groups;
