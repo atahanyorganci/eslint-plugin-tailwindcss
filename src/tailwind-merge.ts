@@ -2,7 +2,7 @@
 /* eslint-disable regexp/no-super-linear-backtracking */
 /* eslint-disable regexp/no-unused-capturing-group */
 /**
- * Type of the result returned by the `experimentalParseClassName` function.
+ * Type of the result returned by the `parseClassName` function.
  *
  * This is an experimental feature and may introduce breaking changes in any minor version update.
  */
