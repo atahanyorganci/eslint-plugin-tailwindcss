@@ -9,13 +9,50 @@ import postcss from "postcss";
 import postcssImport from "postcss-import";
 import { resolveCssFrom, resolveJsFrom } from "./resolve.js";
 
+export interface ClassMetadata {
+	modifiers: string[];
+}
+
+export interface ClassItem {
+	name: string;
+	utility: string;
+	fraction: boolean;
+	modifiers: string[];
+}
+
+export type ClassEntry = [string, ClassMetadata];
+
+export interface SelectorOptions {
+	modifier?: string;
+	value?: string;
+}
+
+export interface VariantEntry {
+	name: string;
+	isArbitrary: boolean;
+	values: string[];
+	hasDash: boolean;
+	selectors: (options: SelectorOptions) => string[];
+}
+
+/**
+ * Subset of `DesignSystem` object from `tailwindcss` package.
+ *
+ * @see {@link https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/design-system.ts#L21 | original source}
+ */
+export interface DesignSystem {
+	/**
+	 * Whether to mark utility declarations as `!important`
+	 */
+	important: boolean;
+	getClassOrder: (classes: string[]) => [string, bigint | null][];
+	getClassList: () => ClassEntry[];
+	getVariants: () => VariantEntry[];
+}
+
 export interface TailwindConfigParams {
 	stylesheet: string;
 	packageName?: string;
-}
-
-export interface DesignSystem {
-	getClassOrder: (classes: string[]) => [string, bigint | null][];
 }
 
 export async function getTailwindConfig({ stylesheet, packageName }: TailwindConfigParams): Promise<DesignSystem> {
