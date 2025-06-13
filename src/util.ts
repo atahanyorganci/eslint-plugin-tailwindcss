@@ -8,6 +8,15 @@ export const SettingsSchema = z.object({
 export type Settings = z.infer<typeof SettingsSchema>;
 
 export function getSettings(context: Rule.RuleContext) {
-	const settings = SettingsSchema.parse(context.settings["tailwindcss"]);
-	return settings;
+	const tailwindcss = context.settings["tailwindcss"];
+	if (!tailwindcss) {
+		throw new Error("Configuration error, `settings.tailwindcss` is missing.");
+	}
+	const result = SettingsSchema.safeParse(tailwindcss);
+	if (result.success) {
+		return result.data;
+	}
+	const { fieldErrors } = result.error.flatten();
+	const lines = Object.entries(fieldErrors).flatMap(([field, errors]) => errors.map(error => `❌ \`settings.tailwindcss.${field}\`: ${error}`));
+	throw new Error(["Configuration error, check `settings.tailwindcss`.", ...lines].join("\n"));
 }
