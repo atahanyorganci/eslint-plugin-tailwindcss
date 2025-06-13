@@ -44,5 +44,10 @@
 		"scss",
 		"pcss",
 		"postcss"
+	],
+	// Add members of monorepo as roots for ESLint configuration
+	"eslint.workingDirectories": [
+		".",
+		"examples/vite-react"
 	]
 }
