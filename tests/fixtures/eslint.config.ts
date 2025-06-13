@@ -3,7 +3,7 @@ import path from "node:path";
 import tailwindcss from "@yorganci/eslint-plugin-tailwindcss";
 
 const config = {
-	files: ["**/*.{ts,tsx}"],
+	files: ["**/*.{js,jsx,ts,tsx}"],
 	languageOptions: {
 		ecmaVersion: "latest",
 		sourceType: "module",
