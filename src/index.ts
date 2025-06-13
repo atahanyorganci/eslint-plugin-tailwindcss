@@ -12,7 +12,7 @@ import shorthand from "./rules/shorthand.js";
 const plugin = {
 	meta: {
 		name: "@yorganci/eslint-plugin-tailwindcss",
-		version: "0.0.3",
+		version: "0.0.4",
 		namespace: "eslint-plugin-tailwindcss",
 	},
 	rules: {
