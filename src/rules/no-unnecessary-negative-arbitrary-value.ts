@@ -1,19 +1,119 @@
 import type { Rule } from "eslint";
+import type { JSXAttribute } from "estree-jsx";
+import { createParseClassname } from "../tailwind-merge.js";
+import { getSettings } from "../util.js";
+
+const NEGATIVE_UTILITIES = new Set([
+	/**
+	 * Margin
+	 * @see https://tailwindcss.com/docs/margin
+	 */
+	["m", "mx", "my", "mt", "mr", "mb", "ml", "ms", "me"],
+	/**
+	 * Padding
+	 * @see https://tailwindcss.com/docs/padding
+	 */
+	["p", "px", "py", "pt", "pr", "pb", "pl", "ps", "pe"],
+	/**
+	 * Space Between
+	 * @see https://tailwindcss.com/docs/margin
+	 */
+	["space-x", "space-y"],
+	/**
+	 * Positioning - Inset
+	 * @see https://tailwindcss.com/docs/top-right-bottom-left
+	 */
+	["inset", "inset-x", "inset-y"],
+	/**
+	 * Positioning - Directional
+	 * @see https://tailwindcss.com/docs/top-right-bottom-left
+	 */
+	["top", "right", "bottom", "left", "start", "end"],
+	/**
+	 * Transforms
+	 * @see https://tailwindcss.com/docs/translate
+	 */
+	["translate-x", "translate-y", "rotate", "skew-x", "skew-y", "scale", "scale-x", "scale-y"],
+	/**
+	 * Typography
+	 * @see https://tailwindcss.com/docs/letter-spacing
+	 */
+	["tracking", "indent"],
+	/**
+	 * Scroll Margin
+	 * @see https://tailwindcss.com/docs/scroll-margin
+	 */
+	["scroll-m", "scroll-mx", "scroll-my", "scroll-mt", "scroll-mr", "scroll-mb", "scroll-ml", "scroll-ms", "scroll-me"],
+	/**
+	 * Scroll Padding
+	 * @see https://tailwindcss.com/docs/scroll-padding
+	 */
+	["scroll-p", "scroll-px", "scroll-py", "scroll-pt", "scroll-pr", "scroll-pb", "scroll-pl", "scroll-ps", "scroll-pe"],
+].flat());
+
+function matchNegativeArbitraryValue(classname: string) {
+	const match = classname.match(/^(?<baseClass>\w+(?:-\w+)*)-\[-(?<value>\d+(\.\d+)?(px|em|rem|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc|deg)?)\]$/);
+	if (!match || !match.groups || !match.groups["baseClass"] || !match.groups["value"]) {
+		return;
+	}
+	const { baseClass, value } = match.groups;
+	return { baseClass, value };
+}
 
 const noUnnecessaryNegativeArbitraryValue = {
 	meta: {
 		type: "suggestion",
 		docs: {
-			category: "Best Practices",
+			category: "Stylistic Issues",
 			description: "Disallow unnecessary negative arbitrary values when alternative exists.",
-			recommended: true,
+			recommended: false,
 		},
 		messages: {
-			unnecessaryNegativeArbitraryValue: `Arbitrary value classname '{{classname}}' should not start with a dash (-)`,
+			unnecessaryNegativeArbitraryValue: `Arbitrary value classname '{{classname}}' should use negative modifier '{{replacement}}' instead`,
 		},
+		fixable: "code",
 	},
-	create() {
-		return {};
+	create(context) {
+		const { classRegex: classRegexString } = getSettings(context);
+		const classRegex = new RegExp(classRegexString);
+		const parseClassname = createParseClassname();
+
+		return {
+			JSXAttribute(node: JSXAttribute) {
+				let nodeName: string;
+				if (typeof node.name.name === "string") {
+					nodeName = node.name.name;
+				}
+				else {
+					nodeName = node.name.name.name;
+				}
+
+				if (
+					classRegex.test(nodeName)
+					&& node.value
+					&& node.value.type === "Literal"
+					&& typeof node.value.value === "string"
+				) {
+					const classlist = node.value.value.split(/\s+/).filter(Boolean).map(cls => [cls, parseClassname(cls)] as const);
+
+					for (const [classname, { baseClassName }] of classlist) {
+						const match = matchNegativeArbitraryValue(baseClassName);
+						if (!match || !NEGATIVE_UTILITIES.has(match.baseClass)) {
+							continue;
+						}
+						const replacement = classname.replace(baseClassName, `-${match.baseClass}-[${match.value}]`);
+						context.report({
+							node,
+							messageId: "unnecessaryNegativeArbitraryValue",
+							data: {
+								classname,
+								replacement,
+							},
+						});
+					}
+				}
+			},
+		};
 	},
 } satisfies Rule.RuleModule;
 
