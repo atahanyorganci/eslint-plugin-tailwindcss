@@ -17,12 +17,6 @@ export default tseslint.config(
 		plugins: {
 			"react-hooks": reactHooks,
 			"react-refresh": reactRefresh,
-			"tailwindcss": tailwindcss,
-		},
-		settings: {
-			tailwindcss: {
-				stylesheet: "./src/styles/globals.css",
-			},
 		},
 		rules: {
 			...reactHooks.configs.recommended.rules,
@@ -30,7 +24,14 @@ export default tseslint.config(
 				"warn",
 				{ allowConstantExport: true },
 			],
-			"tailwindcss/classname-order": "error",
+		},
+	},
+	tailwindcss.configs.strict,
+	{
+		settings: {
+			tailwindcss: {
+				stylesheet: "./src/styles/globals.css",
+			},
 		},
 	},
 );
