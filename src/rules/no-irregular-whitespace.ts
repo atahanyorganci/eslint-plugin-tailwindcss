@@ -11,7 +11,7 @@ const noIrregularWhitespace = {
 	meta: {
 		type: "suggestion",
 		docs: {
-			category: "Stylistic Issues",
+			category: "Best Practices",
 			description: "Disallow redundant whitespace in CSS class name expressions.",
 			recommended: true,
 		},

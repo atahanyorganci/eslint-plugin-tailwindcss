@@ -14,7 +14,7 @@ const noContradictingClassnames = {
 		type: "problem",
 		docs: {
 			category: "Possible Errors",
-			description: "Disallow contradicting Tailwind CSS classnames (e.g. \"w-3 w-5\")",
+			description: "Disallow contradicting Tailwind CSS classnames (e.g. \"w-3 w-5\").",
 			recommended: true,
 		},
 		messages: {

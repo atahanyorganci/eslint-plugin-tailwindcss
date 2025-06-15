@@ -7,7 +7,7 @@ const noDuplicateClassnames = {
 	meta: {
 		type: "suggestion",
 		docs: {
-			category: "Stylistic Issues",
+			category: "Best Practices",
 			description: "Disallow duplicate Tailwind CSS classnames.",
 			recommended: true,
 		},

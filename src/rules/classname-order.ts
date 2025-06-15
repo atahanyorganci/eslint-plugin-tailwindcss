@@ -9,9 +9,9 @@ function arraysEqual<T>(a: T[], b: T[]): boolean {
 
 const classnameOrder = {
 	meta: {
-		type: "suggestion",
+		type: "problem",
 		docs: {
-			category: "Best Practices",
+			category: "Possible Errors",
 			description: "Enforce consistent order of the TailwindCSS classes.",
 			recommended: true,
 		},
