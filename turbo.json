@@ -6,7 +6,7 @@
 		"tsconfig.json"
 	],
 	"tasks": {
-		"build": {
+		"//#build": {
 			"dependsOn": ["check", "lint"],
 			"inputs": [
 				"src/**/*.ts",
@@ -14,24 +14,24 @@
 			],
 			"outputs": ["dist/**/*"]
 		},
-		"check": {
+		"//#check": {
 			"inputs": ["src/**/*"]
 		},
-		"check:watch": {
+		"//#check:watch": {
 			"cache": false,
 			"persistent": true
 		},
-		"ci": {
+		"//#ci": {
 			"dependsOn": ["build", "test"]
 		},
-		"lint": {},
-		"lint:fix": {
+		"//#lint": {},
+		"//#lint:fix": {
 			"cache": false
 		},
-		"test": {
+		"//#test": {
 			"dependsOn": ["build"]
 		},
-		"test:watch": {
+		"//#test:watch": {
 			"cache": false,
 			"persistent": true
 		}
