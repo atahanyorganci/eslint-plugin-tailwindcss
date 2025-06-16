@@ -1,4 +1,4 @@
-import type { ESLint } from "eslint";
+import type { ESLint, Linter } from "eslint";
 import classnameOrder from "./rules/classname-order.js";
 import noArbitraryValue from "./rules/no-arbitrary-value.js";
 import noContradictingClassnames from "./rules/no-contradicting-classnames.js";
@@ -26,6 +26,63 @@ const plugin = {
 		"no-unnecessary-negative-arbitrary-value": noUnnecessaryNegativeArbitraryValue,
 		"shorthand": shorthand,
 	},
+	configs: {
+		recommended: {} as Linter.Config,
+		strict: {} as Linter.Config,
+	},
 } satisfies ESLint.Plugin;
+
+const recommended = {
+	plugins: {
+		tailwindcss: plugin,
+	},
+	languageOptions: {
+		parserOptions: {
+			ecmaFeatures: {
+				jsx: true,
+			},
+		},
+	},
+	rules: {
+		"tailwindcss/classname-order": "warn",
+		"tailwindcss/no-arbitrary-value": "off",
+		"tailwindcss/no-contradicting-classnames": "warn",
+		"tailwindcss/no-custom-classname": "off",
+		"tailwindcss/no-duplicate-classnames": "warn",
+		"tailwindcss/no-irregular-whitespace": "warn",
+		"tailwindcss/no-unnecessary-arbitrary-value": "warn",
+		"tailwindcss/no-unnecessary-negative-arbitrary-value": "off",
+		"tailwindcss/shorthand": "warn",
+	},
+} satisfies Linter.Config;
+
+const strict = {
+	plugins: {
+		tailwindcss: plugin,
+	},
+	languageOptions: {
+		parserOptions: {
+			ecmaFeatures: {
+				jsx: true,
+			},
+		},
+	},
+	rules: {
+		"tailwindcss/classname-order": "error",
+		"tailwindcss/no-arbitrary-value": "off",
+		"tailwindcss/no-contradicting-classnames": "error",
+		"tailwindcss/no-custom-classname": "error",
+		"tailwindcss/no-duplicate-classnames": "error",
+		"tailwindcss/no-irregular-whitespace": "error",
+		"tailwindcss/no-unnecessary-arbitrary-value": "error",
+		"tailwindcss/no-unnecessary-negative-arbitrary-value": "error",
+		"tailwindcss/shorthand": "error",
+	},
+} satisfies Linter.Config;
+
+Object.assign(plugin.configs, {
+	recommended,
+	strict,
+});
 
 export default plugin;
