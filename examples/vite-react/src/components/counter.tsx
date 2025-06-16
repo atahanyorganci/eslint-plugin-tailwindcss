@@ -13,6 +13,7 @@ const Counter: FC = () => {
 				// eslint-disable-next-line tailwindcss/classname-order
 				className="bg-purple-700 text-white rounded-lg text-lg px-4 py-2 cursor-pointer"
 				onClick={() => setCount(count => count + 1)}
+				type="button"
 			>
 				Increment
 			</button>

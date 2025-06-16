@@ -11,5 +11,5 @@ export default antfu({
 		"antfu/no-top-level-await": "off",
 		"dot-notation": "off",
 	},
-	ignores: ["legacy"],
+	ignores: ["legacy", "examples"],
 });
