@@ -1,6 +1,5 @@
-import type { JSXAttribute } from "estree-jsx";
 import { reorderClasses } from "../prettier/index.js";
-import { defineRule, getSettings } from "../util.js";
+import { createVisitor, defineRule, getSettings } from "../util.js";
 
 function arraysEqual<T>(a: T[], b: T[]): boolean {
 	return a.length === b.length && a.every((value, i) => value === b[i]);
@@ -20,44 +19,25 @@ const classnameOrder = defineRule({
 		fixable: "code",
 	},
 	create(context) {
-		const { stylesheet, classRegex: classRegexString } = getSettings(context);
+		const { stylesheet } = getSettings(context);
 
-		return {
-			JSXAttribute(node: JSXAttribute) {
-				const classRegex = new RegExp(classRegexString);
-				let nodeName: string;
-				if (typeof node.name.name === "string") {
-					nodeName = node.name.name;
-				}
-				else {
-					nodeName = node.name.name.name;
-				}
+		return createVisitor({
+			context,
+			classLiteralVisitor: ({ value, report }) => {
+				const classes = value.split(" ").filter(Boolean);
+				const orderedClasses = reorderClasses({
+					stylesheet,
+					classes,
+				});
 
-				// Check if this is a className attribute
-				if (
-					classRegex.test(nodeName)
-					&& node.value
-					&& node.value.type === "Literal"
-					&& typeof node.value.value === "string"
-				) {
-					const classes = node.value.value.split(" ").filter(Boolean);
-					const orderedClasses = reorderClasses({
-						stylesheet,
-						classes,
+				if (!arraysEqual(classes, orderedClasses)) {
+					report({
+						messageId: "invalidOrder",
+						replacementText: orderedClasses.join(" "),
 					});
-
-					if (!arraysEqual(classes, orderedClasses)) {
-						context.report({
-							node,
-							messageId: "invalidOrder",
-							fix(fixer) {
-								return fixer.replaceText(node.value, `"${orderedClasses.join(" ")}"`);
-							},
-						});
-					}
 				}
 			},
-		};
+		});
 	},
 });
 

@@ -1,6 +1,5 @@
-import type { JSXAttribute } from "estree-jsx";
 import { createParseClassname } from "../tailwind-merge.js";
-import { defineRule, getSettings } from "../util.js";
+import { createVisitor, defineRule } from "../util.js";
 
 const NEGATIVE_UTILITIES = new Set([
 	/**
@@ -73,46 +72,29 @@ const noUnnecessaryNegativeArbitraryValue = defineRule({
 		fixable: "code",
 	},
 	create(context) {
-		const { classRegex: classRegexString } = getSettings(context);
-		const classRegex = new RegExp(classRegexString);
-		const parseClassname = createParseClassname();
+		return createVisitor({
+			context,
+			classLiteralVisitor: ({ value, report }) => {
+				const parseClassname = createParseClassname();
+				const classlist = value.split(/\s+/).filter(Boolean).map(cls => [cls, parseClassname(cls)] as const);
 
-		return {
-			JSXAttribute(node: JSXAttribute) {
-				let nodeName: string;
-				if (typeof node.name.name === "string") {
-					nodeName = node.name.name;
-				}
-				else {
-					nodeName = node.name.name.name;
-				}
-
-				if (
-					classRegex.test(nodeName)
-					&& node.value
-					&& node.value.type === "Literal"
-					&& typeof node.value.value === "string"
-				) {
-					const classlist = node.value.value.split(/\s+/).filter(Boolean).map(cls => [cls, parseClassname(cls)] as const);
-
-					for (const [classname, { baseClassName }] of classlist) {
-						const match = matchNegativeArbitraryValue(baseClassName);
-						if (!match || !NEGATIVE_UTILITIES.has(match.baseClass)) {
-							continue;
-						}
-						const replacement = classname.replace(baseClassName, `-${match.baseClass}-[${match.value}]`);
-						context.report({
-							node,
-							messageId: "unnecessaryNegativeArbitraryValue",
-							data: {
-								classname,
-								replacement,
-							},
-						});
+				for (const [classname, { baseClassName }] of classlist) {
+					const match = matchNegativeArbitraryValue(baseClassName);
+					if (!match || !NEGATIVE_UTILITIES.has(match.baseClass)) {
+						continue;
 					}
+					const replacement = classname.replace(baseClassName, `-${match.baseClass}-[${match.value}]`);
+					report({
+						messageId: "unnecessaryNegativeArbitraryValue",
+						data: {
+							classname,
+							replacement,
+						},
+						replacementText: replacement,
+					});
 				}
 			},
-		};
+		});
 	},
 });
 

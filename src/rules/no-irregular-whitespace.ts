@@ -1,5 +1,4 @@
-import type { JSXAttribute } from "estree-jsx";
-import { defineRule, getSettings } from "../util.js";
+import { createVisitor, defineRule } from "../util.js";
 
 const START = /^\s+/;
 const CONSECUTIVE = /\s{2,}/;
@@ -20,44 +19,22 @@ const noIrregularWhitespace = defineRule({
 		fixable: "code",
 	},
 	create(context) {
-		const { classRegex: classRegexString } = getSettings(context);
-		const classRegex = new RegExp(classRegexString);
-
-		return {
-			JSXAttribute(node: JSXAttribute) {
-				let nodeName: string;
-				if (typeof node.name.name === "string") {
-					nodeName = node.name.name;
-				}
-				else {
-					nodeName = node.name.name.name;
-				}
-
+		return createVisitor({
+			context,
+			classLiteralVisitor: ({ value, report }) => {
 				if (
-					classRegex.test(nodeName)
-					&& node.value
-					&& node.value.type === "Literal"
-					&& typeof node.value.value === "string"
+					START.test(value)
+					|| CONSECUTIVE.test(value)
+					|| END.test(value)
+					|| NON_SPACE_WHITESPACE.test(value)
 				) {
-					const classValue = node.value.value;
-
-					if (
-						START.test(classValue)
-						|| CONSECUTIVE.test(classValue)
-						|| END.test(classValue)
-						|| NON_SPACE_WHITESPACE.test(classValue)
-					) {
-						context.report({
-							node,
-							messageId: "irregularWhitespace",
-							fix(fixer) {
-								return fixer.replaceText(node.value, classValue.trim().replace(/\s+/g, " "));
-							},
-						});
-					}
+					report({
+						messageId: "irregularWhitespace",
+						replacementText: value.trim().replace(/\s+/g, " "),
+					});
 				}
 			},
-		};
+		});
 	},
 });
 

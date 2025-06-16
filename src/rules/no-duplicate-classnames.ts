@@ -1,6 +1,5 @@
-import type { JSXAttribute } from "estree-jsx";
 import Counter from "../counter.js";
-import { defineRule, getSettings } from "../util.js";
+import { createVisitor, defineRule } from "../util.js";
 
 const noDuplicateClassnames = defineRule({
 	meta: {
@@ -16,51 +15,31 @@ const noDuplicateClassnames = defineRule({
 		fixable: "code",
 	},
 	create(context) {
-		const { classRegex: classRegexString } = getSettings(context);
-		const classRegex = new RegExp(classRegexString);
-
-		return {
-			JSXAttribute(node: JSXAttribute) {
-				let nodeName: string;
-				if (typeof node.name.name === "string") {
-					nodeName = node.name.name;
-				}
-				else {
-					nodeName = node.name.name.name;
+		return createVisitor({
+			context,
+			classLiteralVisitor: ({ value, report }) => {
+				const classes = value.split(" ").filter(Boolean);
+				const uniqueClasses = new Counter(classes);
+				if (classes.length === uniqueClasses.size) {
+					return;
 				}
 
-				if (
-					classRegex.test(nodeName)
-					&& node.value
-					&& node.value.type === "Literal"
-					&& typeof node.value.value === "string"
-				) {
-					const classes = node.value.value.split(" ").filter(Boolean);
-					const uniqueClasses = new Counter(classes);
-					if (classes.length === uniqueClasses.size) {
-						return;
-					}
+				const unique = Array.from(uniqueClasses.entries().map(([classname]) => classname)).join(" ");
 
-					const unique = Array.from(uniqueClasses.entries().map(([classname]) => classname)).join(" ");
-
-					for (const [classname, count] of uniqueClasses.entries()) {
-						if (count === 1) {
-							continue;
-						}
-						context.report({
-							node,
-							messageId: "duplicateClassname",
-							data: {
-								classname,
-							},
-							fix(fixer) {
-								return fixer.replaceText(node.value, unique);
-							},
-						});
+				for (const [classname, count] of uniqueClasses.entries()) {
+					if (count === 1) {
+						continue;
 					}
+					report({
+						messageId: "duplicateClassname",
+						data: {
+							classname,
+						},
+						replacementText: unique,
+					});
 				}
 			},
-		};
+		});
 	},
 });
 

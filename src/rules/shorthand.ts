@@ -1,6 +1,5 @@
-import type { JSXAttribute } from "estree-jsx";
 import { createParseClassname } from "../tailwind-merge.js";
-import { defineRule, getSettings } from "../util.js";
+import { createVisitor, defineRule } from "../util.js";
 
 const COMBINABLE = /^(?<baseClass>w|h|mx|my|px|py)-(?<value>.+)$/;
 
@@ -34,59 +33,41 @@ const shorthand = defineRule({
 		fixable: "code",
 	},
 	create(context) {
-		const { classRegex: classRegexString } = getSettings(context);
-		const classRegex = new RegExp(classRegexString);
-		const parseClassname = createParseClassname();
+		return createVisitor({
+			context,
+			classLiteralVisitor: ({ value, report }) => {
+				const parseClassname = createParseClassname();
+				const classNames = new Set(value.split(/\s+/).filter(Boolean));
 
-		return {
-			JSXAttribute(node: JSXAttribute) {
-				let nodeName: string;
-				if (typeof node.name.name === "string") {
-					nodeName = node.name.name;
-				}
-				else {
-					nodeName = node.name.name.name;
-				}
+				for (const classname of classNames) {
+					const { baseClassName } = parseClassname(classname);
+					const match = matchCombinableClass(baseClassName);
+					if (!match) {
+						continue;
+					}
+					const pairBaseClass = PAIRS[match.baseClass];
+					if (!pairBaseClass) {
+						continue;
+					}
+					const replacementValue = baseClassName.replace(match.baseClass, pairBaseClass.pair);
+					const pair = classname.replace(baseClassName, replacementValue);
 
-				if (
-					classRegex.test(nodeName)
-					&& node.value
-					&& node.value.type === "Literal"
-					&& typeof node.value.value === "string"
-				) {
-					const classNames = new Set(node.value.value.split(/\s+/).filter(Boolean));
+					if (classNames.has(pair)) {
+						const replacementValue = baseClassName.replace(match.baseClass, pairBaseClass.shorthand);
+						const shorthand = classname.replace(baseClassName, replacementValue);
 
-					for (const classname of classNames) {
-						const { baseClassName } = parseClassname(classname);
-						const match = matchCombinableClass(baseClassName);
-						if (!match) {
-							continue;
-						}
-						const pairBaseClass = PAIRS[match.baseClass];
-						if (!pairBaseClass) {
-							continue;
-						}
-						const replacementValue = baseClassName.replace(match.baseClass, pairBaseClass.pair);
-						const pair = classname.replace(baseClassName, replacementValue);
-
-						if (classNames.has(pair)) {
-							const replacementValue = baseClassName.replace(match.baseClass, pairBaseClass.shorthand);
-							const shorthand = classname.replace(baseClassName, replacementValue);
-
-							context.report({
-								node,
-								messageId: "shorthandCandidate",
-								data: {
-									first: pair,
-									second: classname,
-									shorthand,
-								},
-							});
-						}
+						report({
+							messageId: "shorthandCandidate",
+							data: {
+								first: pair,
+								second: classname,
+								shorthand,
+							},
+						});
 					}
 				}
 			},
-		};
+		});
 	},
 });
 
