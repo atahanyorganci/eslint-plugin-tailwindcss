@@ -75,6 +75,27 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 						},
 					});
 				}
+				else if (node.value.expression.type === "TemplateLiteral") {
+					for (const quasi of node.value.expression.quasis) {
+						if (typeof quasi.value.raw === "string") {
+							classLiteralVisitor({
+								value: quasi.value.raw,
+								report: ({ replacementText, ...report }) => {
+									if (!quasi.range) {
+										return;
+									}
+									const [start, end] = quasi.range;
+									context.report({
+										node: quasi,
+										// Adjust the range to exclude the quotes
+										fix: replacementText ? fixer => fixer.replaceTextRange([start + 1, end - 1], replacementText) : undefined,
+										...report,
+									});
+								},
+							});
+						}
+					}
+				}
 			}
 		},
 	};

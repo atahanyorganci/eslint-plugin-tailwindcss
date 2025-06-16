@@ -36,4 +36,12 @@ describe("`classname-order`", () => {
 		expect(result).toHaveLength(1);
 		expect(result[0].messages).toHaveLength(1);
 	});
+
+	it("should report an error with simple content for JSX expression container with template literal", async () => {
+		const result = await eslint.lintText(`<div class={\`text-red-500 font-light\`}>Simple, basic</div>`, {
+			filePath: "test.tsx",
+		});
+		expect(result).toHaveLength(1);
+		expect(result[0].messages).toHaveLength(1);
+	});
 });

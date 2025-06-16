@@ -69,7 +69,7 @@ describe("`no-irregular-whitespace`", () => {
 		expect(result[0].messages).toHaveLength(1);
 	});
 
-	it.fails("should report error in template literals", async () => {
+	it("should report error in template literals", async () => {
 		const result = await eslint.lintText(`<div class={\`block  text-red\`}>Content</div>`, {
 			filePath: "test.tsx",
 		});
