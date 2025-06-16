@@ -1,4 +1,3 @@
-import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import {
 	createClassGroupUtils,
@@ -7,9 +6,9 @@ import {
 	IMPORTANT_MODIFIER,
 	MODIFIER_SEPARATOR,
 } from "../tailwind-merge.js";
-import { getSettings } from "../util.js";
+import { defineRule, getSettings } from "../util.js";
 
-const noContradictingClassnames = {
+const noContradictingClassnames = defineRule({
 	meta: {
 		type: "problem",
 		docs: {
@@ -106,6 +105,6 @@ const noContradictingClassnames = {
 			},
 		};
 	},
-} satisfies Rule.RuleModule;
+});
 
 export default noContradictingClassnames;

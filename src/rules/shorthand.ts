@@ -1,7 +1,6 @@
-import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import { createParseClassname } from "../tailwind-merge.js";
-import { getSettings } from "../util.js";
+import { defineRule, getSettings } from "../util.js";
 
 const COMBINABLE = /^(?<baseClass>w|h|mx|my|px|py)-(?<value>.+)$/;
 
@@ -21,11 +20,11 @@ const HALF_PAIRS = {
 } as Record<string, { pair: string; shorthand: string }>;
 const PAIRS: Record<string, { pair: string; shorthand: string }> = Object.fromEntries(Object.entries(HALF_PAIRS).flatMap(([key, value]) => [[key, value] as const, [value, key] as const]));
 
-const shorthand = {
+const shorthand = defineRule({
 	meta: {
 		type: "suggestion",
 		docs: {
-			category: "Best Practices",
+			category: "Best Practices" as const,
 			description: "Enforce usage of shorthand Tailwind CSS classname.",
 			recommended: true,
 		},
@@ -89,6 +88,6 @@ const shorthand = {
 			},
 		};
 	},
-} satisfies Rule.RuleModule;
+});
 
 export default shorthand;

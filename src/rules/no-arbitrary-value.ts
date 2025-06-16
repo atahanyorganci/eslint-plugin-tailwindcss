@@ -1,9 +1,8 @@
-import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import { ARBITRARY_VALUE_REGEX, createParseClassname } from "../tailwind-merge.js";
-import { getSettings } from "../util.js";
+import { defineRule, getSettings } from "../util.js";
 
-const noArbitraryValue = {
+const noArbitraryValue = defineRule({
 	meta: {
 		type: "suggestion",
 		docs: {
@@ -55,6 +54,6 @@ const noArbitraryValue = {
 			},
 		};
 	},
-} satisfies Rule.RuleModule;
+});
 
 export default noArbitraryValue;

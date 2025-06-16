@@ -1,13 +1,12 @@
-import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import { reorderClasses } from "../prettier/index.js";
-import { getSettings } from "../util.js";
+import { defineRule, getSettings } from "../util.js";
 
 function arraysEqual<T>(a: T[], b: T[]): boolean {
 	return a.length === b.length && a.every((value, i) => value === b[i]);
 }
 
-const classnameOrder = {
+const classnameOrder = defineRule({
 	meta: {
 		type: "problem",
 		docs: {
@@ -60,6 +59,6 @@ const classnameOrder = {
 			},
 		};
 	},
-} satisfies Rule.RuleModule;
+});
 
 export default classnameOrder;

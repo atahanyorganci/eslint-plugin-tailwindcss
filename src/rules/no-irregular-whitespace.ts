@@ -1,13 +1,12 @@
-import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
-import { getSettings } from "../util.js";
+import { defineRule, getSettings } from "../util.js";
 
 const START = /^\s+/;
 const CONSECUTIVE = /\s{2,}/;
 const NON_SPACE_WHITESPACE = /[^\S ]/;
 const END = /\s+$/;
 
-const noIrregularWhitespace = {
+const noIrregularWhitespace = defineRule({
 	meta: {
 		type: "suggestion",
 		docs: {
@@ -60,6 +59,6 @@ const noIrregularWhitespace = {
 			},
 		};
 	},
-} satisfies Rule.RuleModule;
+});
 
 export default noIrregularWhitespace;

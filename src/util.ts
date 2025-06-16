@@ -1,5 +1,25 @@
-import type { Rule } from "eslint";
+import type { LanguageOptions, RuleContext, RuleDefinition, RuleVisitor } from "@eslint/core";
+import type { Rule, SourceCode } from "eslint";
+import type { Node } from "estree-jsx";
 import { z } from "zod";
+
+export interface Options<TMessage extends string> {
+	LangOptions: LanguageOptions;
+	Code: SourceCode;
+	RuleOptions: unknown[];
+	Visitor: RuleVisitor;
+	Node: Node;
+	MessageIds: TMessage;
+	ExtRuleDocs: {
+		category: "Possible Errors" | "Stylistic Issues" | "Best Practices";
+		description: string;
+		recommended: boolean;
+	};
+}
+
+export function defineRule<TMessage extends string>(rule: RuleDefinition<Options<TMessage>>): Rule.RuleModule {
+	return rule;
+}
 
 export const SettingsSchema = z.object({
 	stylesheet: z.string(),
@@ -7,7 +27,7 @@ export const SettingsSchema = z.object({
 });
 export type Settings = z.infer<typeof SettingsSchema>;
 
-export function getSettings(context: Rule.RuleContext) {
+export function getSettings<TMessage extends string>(context: RuleContext<Pick<Options<TMessage>, "LangOptions" | "Code" | "MessageIds" | "RuleOptions" | "Node">>) {
 	const tailwindcss = context.settings["tailwindcss"];
 	if (!tailwindcss) {
 		throw new Error("Configuration error, `settings.tailwindcss` is missing.");

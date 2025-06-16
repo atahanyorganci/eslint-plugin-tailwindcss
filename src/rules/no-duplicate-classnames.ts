@@ -1,9 +1,8 @@
-import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import Counter from "../counter.js";
-import { getSettings } from "../util.js";
+import { defineRule, getSettings } from "../util.js";
 
-const noDuplicateClassnames = {
+const noDuplicateClassnames = defineRule({
 	meta: {
 		type: "suggestion",
 		docs: {
@@ -63,6 +62,6 @@ const noDuplicateClassnames = {
 			},
 		};
 	},
-} satisfies Rule.RuleModule;
+});
 
 export default noDuplicateClassnames;

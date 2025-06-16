@@ -1,7 +1,6 @@
-import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import { createParseClassname } from "../tailwind-merge.js";
-import { getSettings } from "../util.js";
+import { defineRule, getSettings } from "../util.js";
 
 const REPLACERS = {
 	w: {
@@ -9,7 +8,7 @@ const REPLACERS = {
 	},
 } as Record<string, Record<string, string>>;
 
-const noUnnecessaryArbitraryValue = {
+const noUnnecessaryArbitraryValue = defineRule({
 	meta: {
 		type: "suggestion",
 		docs: {
@@ -73,6 +72,6 @@ const noUnnecessaryArbitraryValue = {
 			},
 		};
 	},
-} satisfies Rule.RuleModule;
+});
 
 export default noUnnecessaryArbitraryValue;

@@ -1,9 +1,8 @@
-import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import { createClassGroupUtils, createParseClassname } from "../tailwind-merge.js";
-import { getSettings } from "../util.js";
+import { defineRule, getSettings } from "../util.js";
 
-const noCustomClassname = {
+const noCustomClassname = defineRule({
 	meta: {
 		type: "suggestion",
 		docs: {
@@ -66,6 +65,6 @@ const noCustomClassname = {
 			},
 		};
 	},
-} satisfies Rule.RuleModule;
+});
 
 export default noCustomClassname;

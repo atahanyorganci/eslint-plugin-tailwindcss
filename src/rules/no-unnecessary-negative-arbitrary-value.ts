@@ -1,7 +1,6 @@
-import type { Rule } from "eslint";
 import type { JSXAttribute } from "estree-jsx";
 import { createParseClassname } from "../tailwind-merge.js";
-import { getSettings } from "../util.js";
+import { defineRule, getSettings } from "../util.js";
 
 const NEGATIVE_UTILITIES = new Set([
 	/**
@@ -60,7 +59,7 @@ function matchNegativeArbitraryValue(classname: string) {
 	return { baseClass, value };
 }
 
-const noUnnecessaryNegativeArbitraryValue = {
+const noUnnecessaryNegativeArbitraryValue = defineRule({
 	meta: {
 		type: "suggestion",
 		docs: {
@@ -115,6 +114,6 @@ const noUnnecessaryNegativeArbitraryValue = {
 			},
 		};
 	},
-} satisfies Rule.RuleModule;
+});
 
 export default noUnnecessaryNegativeArbitraryValue;
