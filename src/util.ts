@@ -3,12 +3,12 @@ import type { Rule, SourceCode } from "eslint";
 import type { JSXAttribute, Node } from "estree-jsx";
 import { z } from "zod";
 
-export interface Options<TMessage extends string> {
+export interface Options<TMessage extends string, TNode = Node> {
 	LangOptions: LanguageOptions;
 	Code: SourceCode;
 	RuleOptions: unknown[];
 	Visitor: RuleVisitor;
-	Node: Node;
+	Node: TNode;
 	MessageIds: TMessage;
 	ExtRuleDocs: {
 		category: "Possible Errors" | "Stylistic Issues" | "Best Practices";
@@ -46,25 +46,35 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 			else {
 				nodeName = node.name.name.name;
 			}
+			if (!classRegex.test(nodeName) || !node.value) {
+				return;
+			}
 
-			if (
-				classRegex.test(nodeName)
-				&& node.value
-				&& node.value.type === "Literal"
-				&& typeof node.value.value === "string"
-			) {
+			if (node.value.type === "Literal" && typeof node.value.value === "string") {
 				classLiteralVisitor({
 					value: node.value.value,
-					report: ({ replacementText, messageId, data, suggest }) => {
+					report: ({ replacementText, ...report }) => {
 						context.report({
 							node,
-							messageId,
-							data,
-							suggest,
 							fix: replacementText ? fixer => fixer.replaceText(node.value, `"${replacementText}"`) : undefined,
+							...report,
 						});
 					},
 				});
+			}
+			else if (node.value.type === "JSXExpressionContainer" && node.value.expression.type !== "JSXEmptyExpression") {
+				if (node.value.expression.type === "Literal" && typeof node.value.expression.value === "string") {
+					classLiteralVisitor({
+						value: node.value.expression.value,
+						report: ({ replacementText, ...report }) => {
+							context.report({
+								node,
+								fix: replacementText ? fixer => fixer.replaceText(node.value, `"${replacementText}"`) : undefined,
+								...report,
+							});
+						},
+					});
+				}
 			}
 		},
 	};
