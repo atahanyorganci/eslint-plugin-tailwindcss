@@ -122,6 +122,15 @@ describe("`no-custom-classname`", () => {
 		expect(result.messages).toHaveLength(0);
 	});
 
+	it("should report error for expressions in template literals", async () => {
+		const code = `
+			<div className={\`flex \${isActive ? 'custom-bg' : 'bg-gray-500'}\`} />
+		`;
+		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
+		expect(result.messages).toHaveLength(1);
+		expect(result.messages[0].message).toContain("custom-bg");
+	});
+
 	it("should handle conditional className with custom classes", async () => {
 		const code = `
 			<div className="flex bg-blue-500 custom-class" />

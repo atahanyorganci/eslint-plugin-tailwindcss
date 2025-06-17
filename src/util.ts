@@ -1,6 +1,6 @@
 import type { LanguageOptions, RuleContext, RuleDefinition, RuleVisitor, SuggestedEdit } from "@eslint/core";
 import type { Rule, SourceCode } from "eslint";
-import type { JSXAttribute, Literal, Node, TemplateElement } from "estree-jsx";
+import type { Expression, JSXAttribute, Literal, Node, TemplateElement } from "estree-jsx";
 import { z } from "zod";
 
 export interface Options<TMessage extends string, TNode = Node> {
@@ -83,6 +83,128 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 		});
 	}
 
+	/**
+	 * Visit an expression's children for CSS class names. Including `Literal` with string values and
+	 * `TemplateLiteral`s with string values.
+	 *
+	 * @param node - The expression to visit
+	 */
+	function visitExpression(node: Expression): void {
+		switch (node.type) {
+			case "ArrayExpression":
+				// `ArrayExpression` is a list of expressions, so we need to visit each element
+				for (const element of node.elements) {
+					if (!element || element.type === "SpreadElement") {
+						continue;
+					}
+					visitExpression(element);
+				}
+				return;
+			case "ArrowFunctionExpression":
+				return;
+			case "AssignmentExpression":
+				return visitExpression(node.right);
+			case "AwaitExpression":
+				return visitExpression(node.argument);
+			case "BinaryExpression":
+				if (node.left.type !== "PrivateIdentifier") {
+					visitExpression(node.left);
+				}
+				return visitExpression(node.right);
+			case "CallExpression":
+				// Skip `CallExpression` as it will be visited by root visitor
+				return;
+			case "ChainExpression":
+				return visitExpression(node.expression);
+			case "ClassExpression":
+				return; // Skip class body
+			case "ConditionalExpression":
+				// Skip `node.test` as it's evaluated to a boolean
+				visitExpression(node.consequent);
+				return visitExpression(node.alternate);
+			case "FunctionExpression":
+				return; // Skip function body
+			case "Identifier":
+				return; // No literals to visit
+			case "ImportExpression":
+				// Skip `node.source` as it doesn't contain CSS class names
+				return;
+			case "Literal":
+				return visitLiteral(node);
+			case "LogicalExpression":
+				visitExpression(node.left);
+				return visitExpression(node.right);
+			case "MemberExpression":
+				if (node.object.type !== "Super") {
+					visitExpression(node.object);
+				}
+				if (node.computed && node.property.type !== "PrivateIdentifier") {
+					visitExpression(node.property);
+				}
+				return;
+			case "MetaProperty":
+				return; // No literals to visit
+			case "NewExpression":
+				if (node.callee.type !== "Super") {
+					visitExpression(node.callee);
+				}
+				for (const arg of node.arguments) {
+					if (arg.type !== "SpreadElement") {
+						visitExpression(arg);
+					}
+				}
+				return;
+			case "ObjectExpression":
+				for (const prop of node.properties) {
+					if (prop.type === "Property") {
+						if (prop.computed && prop.key.type !== "PrivateIdentifier") {
+							visitExpression(prop.key);
+						}
+						if (
+							prop.value.type !== "ObjectPattern"
+							&& prop.value.type !== "ArrayPattern"
+							&& prop.value.type !== "RestElement"
+							&& prop.value.type !== "AssignmentPattern"
+						) {
+							visitExpression(prop.value);
+						}
+					}
+					else if (prop.type === "SpreadElement") {
+						visitExpression(prop.argument);
+					}
+				}
+				return;
+			case "SequenceExpression":
+				for (const expr of node.expressions) {
+					visitExpression(expr);
+				}
+				return;
+			case "TaggedTemplateExpression":
+				// Skip `TaggedTemplateExpression` as it will be visited by root visitor
+				return;
+			case "TemplateLiteral":
+				for (const expr of node.expressions) {
+					visitExpression(expr);
+				}
+				for (const quasi of node.quasis) {
+					visitTemplateElement(quasi);
+				}
+				return;
+			case "ThisExpression":
+				return; // No literals to visit
+			case "UnaryExpression":
+				return visitExpression(node.argument);
+			case "UpdateExpression":
+				return visitExpression(node.argument);
+			case "YieldExpression":
+				if (!node.argument) {
+					return;
+				}
+				return visitExpression(node.argument);
+			default:
+		}
+	}
+
 	const { classRegex: classRegexString } = getSettings(context);
 	const classRegex = new RegExp(classRegexString);
 
@@ -107,6 +229,9 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 					visitLiteral(node.value.expression);
 				}
 				else if (node.value.expression.type === "TemplateLiteral") {
+					for (const expression of node.value.expression.expressions) {
+						visitExpression(expression);
+					}
 					for (const quasi of node.value.expression.quasis) {
 						visitTemplateElement(quasi);
 					}
