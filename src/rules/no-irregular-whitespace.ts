@@ -21,7 +21,7 @@ const noIrregularWhitespace = defineRule({
 	create(context) {
 		return createVisitor({
 			context,
-			classLiteralVisitor: ({ value, report }) => {
+			visitClassValue: ({ value, report }) => {
 				if (
 					START.test(value)
 					|| CONSECUTIVE.test(value)
@@ -30,7 +30,10 @@ const noIrregularWhitespace = defineRule({
 				) {
 					report({
 						messageId: "irregularWhitespace",
-						replacementText: value.trim().replace(/\s+/g, " "),
+						fix: {
+							type: "value",
+							value: value.trim().replace(/\s+/g, " "),
+						},
 					});
 				}
 			},

@@ -29,7 +29,7 @@ const noContradictingClassnames = defineRule({
 
 		return createVisitor({
 			context,
-			classLiteralVisitor: ({ value, report }) => {
+			visitClassValue: ({ value, report }) => {
 				const classnames = value.split(/\s+/).filter(Boolean);
 				const conflictingIds = new Map<string, string>();
 

@@ -19,7 +19,7 @@ const noCustomClassname = defineRule({
 
 		return createVisitor({
 			context,
-			classLiteralVisitor: ({ value, report }) => {
+			visitClassValue: ({ value, report }) => {
 				const classnames = value.split(/\s+/).filter(Boolean);
 
 				for (const classname of classnames) {

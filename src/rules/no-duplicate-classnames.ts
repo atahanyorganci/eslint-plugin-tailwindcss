@@ -17,7 +17,7 @@ const noDuplicateClassnames = defineRule({
 	create(context) {
 		return createVisitor({
 			context,
-			classLiteralVisitor: ({ value, report }) => {
+			visitClassValue: ({ value, report }) => {
 				const classes = value.split(" ").filter(Boolean);
 				const uniqueClasses = new Counter(classes);
 				if (classes.length === uniqueClasses.size) {
@@ -35,7 +35,10 @@ const noDuplicateClassnames = defineRule({
 						data: {
 							classname,
 						},
-						replacementText: unique,
+						fix: {
+							type: "value",
+							value: unique,
+						},
 					});
 				}
 			},

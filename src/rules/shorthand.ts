@@ -35,7 +35,7 @@ const shorthand = defineRule({
 	create(context) {
 		return createVisitor({
 			context,
-			classLiteralVisitor: ({ value, report }) => {
+			visitClassValue: ({ value, report }) => {
 				const parseClassname = createParseClassname();
 				const classNames = new Set(value.split(/\s+/).filter(Boolean));
 

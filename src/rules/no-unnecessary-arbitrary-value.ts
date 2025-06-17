@@ -23,7 +23,7 @@ const noUnnecessaryArbitraryValue = defineRule({
 	create(context) {
 		return createVisitor({
 			context,
-			classLiteralVisitor: ({ value, report }) => {
+			visitClassValue: ({ value, report }) => {
 				const parseClassname = createParseClassname();
 				const classlist = value.split(/\s+/).filter(Boolean).map(cls => [cls, parseClassname(cls)] as const);
 
@@ -48,7 +48,6 @@ const noUnnecessaryArbitraryValue = defineRule({
 							classname,
 							replacement,
 						},
-						replacementText: replacement,
 					});
 				}
 			},

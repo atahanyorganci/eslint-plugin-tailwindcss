@@ -66,7 +66,7 @@ const classnameOrder = defineRule({
 
 		return createVisitor({
 			context,
-			classLiteralVisitor: ({ value, report }) => {
+			visitClassValue: ({ value, report }) => {
 				const { classnames, leading, whitespaces } = splitClassValueToParts(value);
 				if (classnames.length === 0) {
 					return;
@@ -80,7 +80,10 @@ const classnameOrder = defineRule({
 				if (!arraysEqual(classnames, orderedClasses)) {
 					report({
 						messageId: "invalidOrder",
-						replacementText: joinClassValueParts({ leading, classnames: orderedClasses, whitespaces }),
+						fix: {
+							type: "value",
+							value: joinClassValueParts({ leading, classnames: orderedClasses, whitespaces }),
+						},
 					});
 				}
 			},

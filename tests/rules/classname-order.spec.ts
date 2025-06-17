@@ -291,7 +291,7 @@ describe("`classname-order` (legacy conversions)", () => {
 		const code = `<div class='lg:box-border box-content'>Simple quotes</div>`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toBe(`"box-content lg:box-border"`);
+		expect(result.messages[0].fix?.text).toBe(`'box-content lg:box-border'`);
 	});
 
 	it("should report an error and fix with whitespace preserved", async () => {
