@@ -294,11 +294,11 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`"box-content lg:box-border"`);
 	});
 
-	it("should report an error and fix with whitespace trimmed", async () => {
-		const code = `<div class="w-12  lg:w-6   w-12">Single line dups + no head/tail spaces</div>`;
+	it("should report an error and fix with whitespace preserved", async () => {
+		const code = `<div class=" w-12  lg:w-6   w-12    ">Single line dups + no head/tail spaces</div>`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toBe(`"w-12 w-12 lg:w-6"`);
+		expect(result.messages[0].fix?.text).toBe(`" w-12  w-12   lg:w-6    "`);
 	});
 
 	it.fails("should report an error for parts of template literal", async () => {
