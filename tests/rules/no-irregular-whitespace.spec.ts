@@ -132,4 +132,21 @@ describe("`no-irregular-whitespace`", () => {
 		expect(result.messages).toHaveLength(1);
 		expect(result.messages[0].fix?.text).toBe("block text-red");
 	});
+
+	it("should report error for styles in constants", async () => {
+		const [result] = await eslint.lintText(`const styles = "block  text-red";`, {
+			filePath: "test.tsx",
+		});
+		expect(result.messages).toHaveLength(1);
+		expect(result.messages[0].fix?.text).toBe(`"block text-red"`);
+	});
+
+	it("should report error for styles in multiple constants", async () => {
+		const [result] = await eslint.lintText(`const blueStyles = "  block  text-blue", redStyles = "block  text-red";`, {
+			filePath: "test.tsx",
+		});
+		expect(result.messages).toHaveLength(2);
+		expect(result.messages[0].fix?.text).toBe(`"block text-blue"`);
+		expect(result.messages[1].fix?.text).toBe(`"block text-red"`);
+	});
 });

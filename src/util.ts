@@ -1,6 +1,6 @@
 import type { LanguageOptions, RuleContext, RuleDefinition, RuleVisitor, SuggestedEdit } from "@eslint/core";
 import type { Rule, SourceCode } from "eslint";
-import type { CallExpression, Expression, JSXAttribute, Literal, Node, TaggedTemplateExpression, TemplateElement } from "estree-jsx";
+import type { CallExpression, Expression, JSXAttribute, Literal, Node, TaggedTemplateExpression, TemplateElement, VariableDeclarator } from "estree-jsx";
 import { z } from "zod";
 
 export interface Options<TMessage extends string, TNode = Node> {
@@ -209,10 +209,12 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 		classRegex: classRegexString,
 		tags: tagsArray,
 		classFunctions: classFunctionsArray,
+		identifierRegex: identifierRegexString,
 	} = getSettings(context);
 	const classRegex = new RegExp(classRegexString);
 	const tags = new Set(tagsArray);
 	const classFunctions = new Set(classFunctionsArray);
+	const identifierRegex = new RegExp(identifierRegexString, "i");
 
 	return {
 		JSXAttribute(node: JSXAttribute) {
@@ -268,6 +270,12 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 				}
 			}
 		},
+		VariableDeclarator(node: VariableDeclarator) {
+			if (node.id.type !== "Identifier" || !identifierRegex.test(node.id.name) || !node.init) {
+				return;
+			}
+			visitExpression(node.init);
+		},
 	};
 }
 
@@ -291,6 +299,10 @@ export const SettingsSchema = z.object({
 	 * List of tags to check for class names.
 	 */
 	tags: z.string().array().default(["tw"]),
+	/**
+	 * Regex for identifiers to check for class names.
+	 */
+	identifierRegex: z.string().default("^.*styles$"),
 });
 export type Settings = z.infer<typeof SettingsSchema>;
 
