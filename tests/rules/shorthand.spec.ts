@@ -259,5 +259,11 @@ describe("`shorthand`", () => {
 			expect(result.messages[0].message).toContain("h-10");
 			expect(result.messages[0].message).toContain("size-10");
 		});
+
+		it.fails("should not suggest shorthand where combined class is not a valid Tailwind class", async () => {
+			const code = `<div className="w-screen h-screen bg-red-500" />`;
+			const [result] = await eslint.lintText(code, { filePath: "test.jsx" });
+			expect(result.messages).toHaveLength(0);
+		});
 	});
 });
