@@ -66,8 +66,16 @@ export default defineConfig([
 	{
 		settings: {
 			tailwindcss: {
-				stylesheet: "path/to/tailwind/stylesheet.css",
-				classRegex: "^class(?:Name)?$",
+				// Path to CSS file with `@import "tailwindcss";` directive.
+				stylesheet: z.string(),
+				// Regex to match attribute names in JSX
+				classRegex: z.string().default("^class(?:Name)?$"),
+				// List of class functions to check for class names.
+				classFunctions: z.string().array().default(["classnames", "clsx", "ctl", "twMerge", "twJoin", "cn"]),
+				// List of tags to check for class names, tw`block text-red`
+				tags: z.string().array().default(["tw"]),
+				// Regex to match variable names, `const styles = "..."`
+				identifierRegex: z.string().default("^.*styles$"),
 			}
 		}
 	}

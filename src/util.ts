@@ -288,7 +288,7 @@ export const SettingsSchema = z.object({
 	 */
 	stylesheet: z.string(),
 	/**
-	 * Regex to match class names.
+	 * Regex to match attribute names in JSX
 	 */
 	classRegex: z.string().default("^class(?:Name)?$"),
 	/**
@@ -296,11 +296,11 @@ export const SettingsSchema = z.object({
 	 */
 	classFunctions: z.string().array().default(["classnames", "clsx", "ctl", "twMerge", "twJoin", "cn"]),
 	/**
-	 * List of tags to check for class names.
+	 * List of tags to check for class names, tw`block text-red`
 	 */
 	tags: z.string().array().default(["tw"]),
 	/**
-	 * Regex for identifiers to check for class names.
+	 * Regex to match variable names, `const styles = "..."`
 	 */
 	identifierRegex: z.string().default("^.*styles$"),
 });
