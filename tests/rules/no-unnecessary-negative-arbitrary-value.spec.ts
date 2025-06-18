@@ -20,10 +20,13 @@ describe("`no-unnecessary-negative-arbitrary-value`", () => {
 		expect(result.messages).toHaveLength(3);
 		expect(result.messages[0].message).toContain("m-[-10px]");
 		expect(result.messages[0].message).toContain("-m-[10px]");
+		expect(result.messages[0].fix?.text).toEqual(`"-m-[10px] mx-[-1rem] my-[-50%]"`);
 		expect(result.messages[1].message).toContain("mx-[-1rem]");
 		expect(result.messages[1].message).toContain("-mx-[1rem]");
+		expect(result.messages[1].fix?.text).toEqual(`"m-[-10px] -mx-[1rem] my-[-50%]"`);
 		expect(result.messages[2].message).toContain("my-[-50%]");
 		expect(result.messages[2].message).toContain("-my-[50%]");
+		expect(result.messages[2].fix?.text).toEqual(`"m-[-10px] mx-[-1rem] -my-[50%]"`);
 	});
 
 	it("should report negative arbitrary values for padding utilities", async () => {
@@ -120,5 +123,18 @@ describe("`no-unnecessary-negative-arbitrary-value`", () => {
 		expect(result.messages).toHaveLength(2);
 		expect(result.messages[0].message).toContain("-m-[10.5px]");
 		expect(result.messages[1].message).toContain("-p-[1.25rem]");
+	});
+
+	it("should preserve leading and trailing whitespace", async () => {
+		const code = `<div className=" bg-red-500  m-[-10px]   p-[-5px]   ">Content</div>`;
+		const [result] = await eslint.lintText(code, { filePath: "test.jsx" });
+
+		expect(result.messages).toHaveLength(2);
+		expect(result.messages[0].message).toContain("m-[-10px]");
+		expect(result.messages[0].message).toContain("-m-[10px]");
+		expect(result.messages[0].fix?.text).toEqual(`" bg-red-500  -m-[10px]   p-[-5px]   "`);
+		expect(result.messages[1].message).toContain("p-[-5px]");
+		expect(result.messages[1].message).toContain("-p-[5px]");
+		expect(result.messages[1].fix?.text).toEqual(`" bg-red-500  m-[-10px]   -p-[5px]   "`);
 	});
 });

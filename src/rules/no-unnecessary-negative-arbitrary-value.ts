@@ -1,5 +1,6 @@
+import type { ParsedClassName } from "../tailwind-merge.js";
 import { createParseClassname } from "../tailwind-merge.js";
-import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
+import { createVisitor, defineRule, joinClassValueParts, splitClassValueToParts } from "../util.js";
 
 const NEGATIVE_UTILITIES = new Set([
 	/**
@@ -58,6 +59,14 @@ function matchNegativeArbitraryValue(classname: string) {
 	return { baseClass, value };
 }
 
+function tryReplaceNegativeArbitraryValue(classname: string, { baseClassName }: ParsedClassName) {
+	const match = matchNegativeArbitraryValue(baseClassName);
+	if (!match || !NEGATIVE_UTILITIES.has(match.baseClass)) {
+		return;
+	}
+	return classname.replace(baseClassName, `-${match.baseClass}-[${match.value}]`);
+}
+
 const noUnnecessaryNegativeArbitraryValue = defineRule({
 	meta: {
 		type: "suggestion",
@@ -76,20 +85,28 @@ const noUnnecessaryNegativeArbitraryValue = defineRule({
 			context,
 			visitClassValue: ({ value, report }) => {
 				const parseClassname = createParseClassname();
-				const { classnames } = splitClassValueToParts(value);
+				const { leading, classnames, whitespaces } = splitClassValueToParts(value);
 
-				for (const classname of classnames) {
-					const { baseClassName } = parseClassname(classname);
-					const match = matchNegativeArbitraryValue(baseClassName);
-					if (!match || !NEGATIVE_UTILITIES.has(match.baseClass)) {
+				for (let i = 0; i < classnames.length; i++) {
+					const classname = classnames[i]!;
+					const replacement = tryReplaceNegativeArbitraryValue(classname, parseClassname(classname));
+					if (!replacement) {
 						continue;
 					}
-					const replacement = classname.replace(baseClassName, `-${match.baseClass}-[${match.value}]`);
+					const fixed = joinClassValueParts({
+						leading,
+						classnames: [...classnames.slice(0, i), replacement, ...classnames.slice(i + 1)],
+						whitespaces,
+					});
 					report({
 						messageId: "unnecessaryNegativeArbitraryValue",
 						data: {
 							classname,
 							replacement,
+						},
+						fix: {
+							type: "value",
+							value: fixed,
 						},
 					});
 				}

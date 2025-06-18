@@ -1,11 +1,30 @@
+import type { ParsedClassName } from "../tailwind-merge.js";
 import { createParseClassname } from "../tailwind-merge.js";
-import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
+import { createVisitor, defineRule, joinClassValueParts, splitClassValueToParts } from "../util.js";
 
 const REPLACERS = {
 	w: {
 		"50%": "1/2",
 	},
 } as Record<string, Record<string, string>>;
+
+function tryReplaceArbitraryValue(classname: string, { baseClassName }: ParsedClassName) {
+	const match = baseClassName.match(/(?<baseClass>\w+)-\[(?<value>.+)\]/);
+	if (!match || !match.groups || !match.groups["baseClass"] || !match.groups["value"]) {
+		return;
+	}
+	const { baseClass, value } = match.groups;
+	const replacers = REPLACERS[baseClass];
+	if (!replacers) {
+		return;
+	}
+	const replacementValue = replacers[value];
+	if (!replacementValue) {
+		return;
+	}
+	const replacement = classname.replace(/\[.+\]/, replacementValue);
+	return replacement;
+}
 
 const noUnnecessaryArbitraryValue = defineRule({
 	meta: {
@@ -25,29 +44,28 @@ const noUnnecessaryArbitraryValue = defineRule({
 			context,
 			visitClassValue: ({ value, report }) => {
 				const parseClassname = createParseClassname();
-				const { classnames } = splitClassValueToParts(value);
+				const { leading, classnames, whitespaces } = splitClassValueToParts(value);
 
-				for (const classname of classnames) {
-					const { baseClassName } = parseClassname(classname);
-					const match = baseClassName.match(/(?<baseClass>\w+)-\[(?<value>.+)\]/);
-					if (!match || !match.groups || !match.groups["baseClass"] || !match.groups["value"]) {
+				for (let i = 0; i < classnames.length; i++) {
+					const classname = classnames[i]!;
+					const replacement = tryReplaceArbitraryValue(classname, parseClassname(classname));
+					if (!replacement) {
 						continue;
 					}
-					const { baseClass, value } = match.groups;
-					const replacers = REPLACERS[baseClass];
-					if (!replacers) {
-						continue;
-					}
-					const replacementValue = replacers[value];
-					if (!replacementValue) {
-						continue;
-					}
-					const replacement = classname.replace(/\[.+\]/, replacementValue);
+					const fixed = joinClassValueParts({
+						leading,
+						classnames: [...classnames.slice(0, i), replacement, ...classnames.slice(i + 1)],
+						whitespaces,
+					});
 					report({
 						messageId: "unnecessaryArbitraryValue",
 						data: {
 							classname,
 							replacement,
+						},
+						fix: {
+							type: "value",
+							value: fixed,
 						},
 					});
 				}
