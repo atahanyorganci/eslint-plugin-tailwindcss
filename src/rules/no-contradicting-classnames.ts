@@ -5,7 +5,7 @@ import {
 	IMPORTANT_MODIFIER,
 	MODIFIER_SEPARATOR,
 } from "../tailwind-merge.js";
-import { createVisitor, defineRule } from "../util.js";
+import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
 const noContradictingClassnames = defineRule({
 	meta: {
@@ -30,7 +30,7 @@ const noContradictingClassnames = defineRule({
 		return createVisitor({
 			context,
 			visitClassValue: ({ value, report }) => {
-				const classnames = value.split(/\s+/).filter(Boolean);
+				const { classnames } = splitClassValueToParts(value);
 				const conflictingIds = new Map<string, string>();
 
 				for (const classname of classnames) {

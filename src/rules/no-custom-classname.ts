@@ -1,5 +1,5 @@
 import { createClassGroupUtils, createParseClassname } from "../tailwind-merge.js";
-import { createVisitor, defineRule } from "../util.js";
+import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
 const noCustomClassname = defineRule({
 	meta: {
@@ -20,7 +20,7 @@ const noCustomClassname = defineRule({
 		return createVisitor({
 			context,
 			visitClassValue: ({ value, report }) => {
-				const classnames = value.split(/\s+/).filter(Boolean);
+				const { classnames } = splitClassValueToParts(value);
 
 				for (const classname of classnames) {
 					const { baseClassName, maybePostfixModifierPosition } = parseClassname(classname);

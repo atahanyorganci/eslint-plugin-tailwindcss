@@ -1,5 +1,5 @@
 import { createParseClassname } from "../tailwind-merge.js";
-import { createVisitor, defineRule } from "../util.js";
+import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
 const COMBINABLE = /^(?<baseClass>w|h|mx|my|px|py)-(?<value>.+)$/;
 
@@ -37,9 +37,10 @@ const shorthand = defineRule({
 			context,
 			visitClassValue: ({ value, report }) => {
 				const parseClassname = createParseClassname();
-				const classNames = new Set(value.split(/\s+/).filter(Boolean));
+				const { classnames } = splitClassValueToParts(value);
+				const uniqueClassnames = new Set(classnames);
 
-				for (const classname of classNames) {
+				for (const classname of uniqueClassnames) {
 					const { baseClassName } = parseClassname(classname);
 					const match = matchCombinableClass(baseClassName);
 					if (!match) {
@@ -52,7 +53,7 @@ const shorthand = defineRule({
 					const replacementValue = baseClassName.replace(match.baseClass, pairBaseClass.pair);
 					const pair = classname.replace(baseClassName, replacementValue);
 
-					if (classNames.has(pair)) {
+					if (uniqueClassnames.has(pair)) {
 						const replacementValue = baseClassName.replace(match.baseClass, pairBaseClass.shorthand);
 						const shorthand = classname.replace(baseClassName, replacementValue);
 

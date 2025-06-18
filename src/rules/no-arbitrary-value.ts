@@ -1,5 +1,5 @@
 import { ARBITRARY_VALUE_REGEX, createParseClassname } from "../tailwind-merge.js";
-import { createVisitor, defineRule } from "../util.js";
+import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
 const noArbitraryValue = defineRule({
 	meta: {
@@ -18,10 +18,11 @@ const noArbitraryValue = defineRule({
 			context,
 			visitClassValue: ({ value, report }) => {
 				const parseClassname = createParseClassname();
-				const classlist = value.split(/\s+/).filter(Boolean).map(cls => [cls, parseClassname(cls)] as const);
+				const { classnames } = splitClassValueToParts(value);
 
-				for (const [classname, parsedClassname] of classlist) {
-					if (!ARBITRARY_VALUE_REGEX.test(parsedClassname.baseClassName)) {
+				for (const classname of classnames) {
+					const { baseClassName } = parseClassname(classname);
+					if (!ARBITRARY_VALUE_REGEX.test(baseClassName)) {
 						continue;
 					}
 					report({

@@ -1,5 +1,5 @@
 import { createParseClassname } from "../tailwind-merge.js";
-import { createVisitor, defineRule } from "../util.js";
+import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
 const REPLACERS = {
 	w: {
@@ -25,9 +25,10 @@ const noUnnecessaryArbitraryValue = defineRule({
 			context,
 			visitClassValue: ({ value, report }) => {
 				const parseClassname = createParseClassname();
-				const classlist = value.split(/\s+/).filter(Boolean).map(cls => [cls, parseClassname(cls)] as const);
+				const { classnames } = splitClassValueToParts(value);
 
-				for (const [classname, { baseClassName }] of classlist) {
+				for (const classname of classnames) {
+					const { baseClassName } = parseClassname(classname);
 					const match = baseClassName.match(/(?<baseClass>\w+)-\[(?<value>.+)\]/);
 					if (!match || !match.groups || !match.groups["baseClass"] || !match.groups["value"]) {
 						continue;

@@ -3,6 +3,53 @@ import type { Rule, SourceCode } from "eslint";
 import type { CallExpression, Expression, JSXAttribute, Literal, Node, TaggedTemplateExpression, TemplateElement, VariableDeclarator } from "estree-jsx";
 import { z } from "zod";
 
+export function arrayEquals<T>(a: T[], b: T[]): boolean {
+	return a.length === b.length && a.every((value, i) => value === b[i]);
+}
+
+const CLASS_LITERAL = /(?<leading>\s+)?(?<classname>\S+)(?<trailing>\s+)?/g;
+
+export function splitClassValueToParts(text: string) {
+	const classnames = [];
+	const whitespaces = [];
+
+	let match = CLASS_LITERAL.exec(text);
+	let leading: string | undefined;
+	while (match !== null) {
+		if (!match.groups || !match.groups["classname"]) {
+			throw new Error("Unreachable");
+		}
+
+		if (match.groups["leading"]) {
+			leading = match.groups["leading"];
+		}
+		classnames.push(match.groups["classname"]);
+		whitespaces.push(match.groups["trailing"]);
+
+		match = CLASS_LITERAL.exec(text);
+	}
+	return {
+		leading,
+		classnames,
+		whitespaces,
+	};
+}
+
+export function joinClassValueParts({ leading, classnames, whitespaces }: ReturnType<typeof splitClassValueToParts>) {
+	const parts = leading ? [leading] : [];
+	for (let i = 0; i < classnames.length; i++) {
+		const classname = classnames[i];
+		const whitespace = whitespaces[i];
+		if (classname) {
+			parts.push(classname);
+		}
+		if (whitespace) {
+			parts.push(whitespace);
+		}
+	}
+	return parts.join("");
+}
+
 export interface Options<TMessage extends string, TNode = Node> {
 	LangOptions: LanguageOptions;
 	Code: SourceCode;

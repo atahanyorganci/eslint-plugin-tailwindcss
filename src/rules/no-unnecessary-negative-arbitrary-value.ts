@@ -1,5 +1,5 @@
 import { createParseClassname } from "../tailwind-merge.js";
-import { createVisitor, defineRule } from "../util.js";
+import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
 const NEGATIVE_UTILITIES = new Set([
 	/**
@@ -76,9 +76,10 @@ const noUnnecessaryNegativeArbitraryValue = defineRule({
 			context,
 			visitClassValue: ({ value, report }) => {
 				const parseClassname = createParseClassname();
-				const classlist = value.split(/\s+/).filter(Boolean).map(cls => [cls, parseClassname(cls)] as const);
+				const { classnames } = splitClassValueToParts(value);
 
-				for (const [classname, { baseClassName }] of classlist) {
+				for (const classname of classnames) {
+					const { baseClassName } = parseClassname(classname);
 					const match = matchNegativeArbitraryValue(baseClassName);
 					if (!match || !NEGATIVE_UTILITIES.has(match.baseClass)) {
 						continue;

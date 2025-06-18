@@ -1,5 +1,5 @@
 import Counter from "../counter.js";
-import { createVisitor, defineRule } from "../util.js";
+import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
 const noDuplicateClassnames = defineRule({
 	meta: {
@@ -18,15 +18,14 @@ const noDuplicateClassnames = defineRule({
 		return createVisitor({
 			context,
 			visitClassValue: ({ value, report }) => {
-				const classes = value.split(" ").filter(Boolean);
-				const uniqueClasses = new Counter(classes);
-				if (classes.length === uniqueClasses.size) {
+				const { classnames } = splitClassValueToParts(value);
+				const classnameCounts = new Counter(classnames);
+				if (classnames.length === classnameCounts.size) {
 					return;
 				}
 
-				const unique = Array.from(uniqueClasses.entries().map(([classname]) => classname)).join(" ");
-
-				for (const [classname, count] of uniqueClasses.entries()) {
+				const unique = Array.from(classnameCounts.keys()).join(" ");
+				for (const [classname, count] of classnameCounts.entries()) {
 					if (count === 1) {
 						continue;
 					}
