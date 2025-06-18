@@ -258,18 +258,18 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`"grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 sm:px-8 sm:py-12 md:py-16"`);
 	});
 
-	it.fails("should report an error for template literal in function call", async () => {
+	it("should report an error for template literal in function call", async () => {
 		const code = "ctl(`p-10 w-full ${some}`)";
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toBe(`"w-full p-10 "`);
+		expect(result.messages[0].fix?.text).toBe("w-full p-10 ");
 	});
 
-	it.fails("should report an error for template literal and fix should trim whitespace", async () => {
+	it("should report an error for template literal and keep whitespace", async () => {
 		const code = "<div className={ctl(`p-10 w-full  ${live && 'bg-white dark:bg-black'}`)}>Space trim issue with fix</div>";
 		const [result] = await loadEslintTw().lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toBe(`"w-full p-10 "`);
+		expect(result.messages[0].fix?.text).toBe("w-full p-10  ");
 	});
 
 	it("should report an error for prose plugin", async () => {
@@ -300,7 +300,7 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`" w-12  w-12   lg:w-6    "`);
 	});
 
-	it.fails("should report an error for parts of template literal", async () => {
+	it("should report an error for parts of template literal", async () => {
 		const code = `
       const buttonClasses = ctl(\`
         \${fullWidth ? "w-12" : "w-6"}
@@ -312,10 +312,10 @@ describe("`classname-order` (legacy conversions)", () => {
       \`);`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toContain(/flex\s+lg:w-9/);
+		expect(result.messages[0].fix?.text).toMatch(/flex\s+lg:w-9/);
 	});
 
-	it.fails("should report an error for parts of template literal 2", async () => {
+	it("should report an error for parts of template literal 2", async () => {
 		const code = `
       const buttonClasses = ctl(\`
         \${fullWidth ? "w-12" : "w-6"}
@@ -328,8 +328,8 @@ describe("`classname-order` (legacy conversions)", () => {
       \`);`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(2);
-		expect(result.messages[0].fix?.text).toContain(/container\s+flex/);
-		expect(result.messages[1].fix?.text).toContain(/sm:py-6\s+lg:py-4/);
+		expect(result.messages[0].fix?.text).toMatch(/container\s+flex/);
+		expect(result.messages[1].fix?.text).toMatch(/sm:py-6\s+lg:py-4/);
 	});
 
 	it("should report an error for arbitrary value but incorrect order", async () => {
@@ -339,12 +339,11 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`"w-[320px] sm:w-12"`);
 	});
 
-	// TODO: callees
-	it.fails("should report an error for clsx", async () => {
+	it("should report an error for clsx", async () => {
 		const code = `clsx(\`absolute bottom-0 w-full h-[70px] flex flex-col\`);`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toBe(`"absolute bottom-0 flex h-[70px] w-full flex-col"`);
+		expect(result.messages[0].fix?.text).toBe("absolute bottom-0 flex h-[70px] w-full flex-col");
 	});
 
 	it("should report an error for cva", async () => {
@@ -356,12 +355,11 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`"absolute bottom-0 flex h-[70px] w-full flex-col"`);
 	});
 
-	// TODO: callees
-	it.fails("should report an error clsx inside JSX with template literal", async () => {
+	it("should report an error clsx inside JSX with template literal", async () => {
 		const code = `<div className={clsx(\`absolute bottom-0 w-full h-[70px] flex flex-col\`)}>clsx</div>`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toBe(`"absolute bottom-0 flex h-[70px] w-full flex-col"`);
+		expect(result.messages[0].fix?.text).toBe("absolute bottom-0 flex h-[70px] w-full flex-col");
 	});
 
 	it("should report errors for template literal parts", async () => {
@@ -399,11 +397,11 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`"flex px-2"`);
 	});
 
-	it.fails("should report an error for template literal", async () => {
+	it("should report an error for template literal", async () => {
 		const code = `ctl(\`px-2 flex\`)`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toBe(`"flex px-2"`);
+		expect(result.messages[0].fix?.text).toBe("flex px-2");
 	});
 
 	it("should report an error for template literal 2", async () => {
@@ -418,7 +416,7 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toMatch(/flex\s+px-2/);
 	});
 
-	it.fails("should resolve francoismassart/eslint-plugin-tailwindcss#19", async () => {
+	it("should resolve francoismassart/eslint-plugin-tailwindcss#19", async () => {
 		const code = `
       <div
         className="
@@ -435,10 +433,10 @@ describe("`classname-order` (legacy conversions)", () => {
       `;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).match(/fixed\s+bottom-0\s+left-0\s+right-0\s+top-0\s+transform\s+transition-all/);
+		expect(result.messages[0].fix?.text).toMatch(/fixed\s+top-0\s+right-0\s+bottom-0\s+left-0\s+transform\s+transition-all/);
 	});
 
-	it.fails("should report an error for template literal 3", async () => {
+	it("should report an error for template literal 3", async () => {
 		const code = `
       <div
         className={clsx(
@@ -450,23 +448,20 @@ describe("`classname-order` (legacy conversions)", () => {
       />
       `;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
-		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toMatch(/w-full\s+h-10\s+rounded/);
-		expect(result.messages[0].fix?.text).toMatch(/flex\s+ring-black/);
+		expect(result.messages).toHaveLength(2);
+		expect(result.messages[0].fix?.text).toMatch(/h-10\s+w-full\s+rounded/);
+		expect(result.messages[1].fix?.text).toMatch(/flex\s+ring-black/);
 	});
 
-	// TODO: callees
-	it.fails("should report an error for array elements", async () => {
-		const code = `
-      <div className={classnames(['invalid lg:w-4 sm:w-6', ['w-12 flex']])} />
-      `;
+	it("should report an error for array elements", async () => {
+		const code = `<div className={classnames(['invalid lg:w-4 sm:w-6', ['w-12 flex']])} />`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
-		expect(result.messages).toHaveLength(1);
+		expect(result.messages).toHaveLength(2);
 		expect(result.messages[0].fix?.text).toMatch(/invalid\s+sm:w-6\s+lg:w-4/);
-		expect(result.messages[0].fix?.text).toMatch(/flex\s+w-12/);
+		expect(result.messages[1].fix?.text).toMatch(/flex\s+w-12/);
 	});
 
-	it.fails("should report an error for object keys", async () => {
+	it("should report an error for object keys", async () => {
 		const code = `
       <div className={classnames({
         invalid,
@@ -476,7 +471,7 @@ describe("`classname-order` (legacy conversions)", () => {
       `;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toBe(`"sm:w-6 lg:w-4"`);
+		expect(result.messages[0].fix?.text).toBe("'sm:w-6 lg:w-4'");
 	});
 
 	it("should report an error for class attribute", async () => {

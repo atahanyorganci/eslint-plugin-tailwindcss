@@ -157,7 +157,7 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 			case "ObjectExpression":
 				for (const prop of node.properties) {
 					if (prop.type === "Property") {
-						if (prop.computed && prop.key.type !== "PrivateIdentifier") {
+						if (prop.key.type !== "PrivateIdentifier") {
 							visitExpression(prop.key);
 						}
 						if (
