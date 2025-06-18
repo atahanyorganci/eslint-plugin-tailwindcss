@@ -272,7 +272,7 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`"w-full p-10 "`);
 	});
 
-	it.fails("should report an error for prose plugin", async () => {
+	it("should report an error for prose plugin", async () => {
 		const code = `<div class="md:prose-2xl prose-xl prose sm:prose-sm"></div>`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
