@@ -233,17 +233,7 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 				visitLiteral(node.value);
 			}
 			else if (node.value.type === "JSXExpressionContainer" && node.value.expression.type !== "JSXEmptyExpression") {
-				if (node.value.expression.type === "Literal") {
-					visitLiteral(node.value.expression);
-				}
-				else if (node.value.expression.type === "TemplateLiteral") {
-					for (const expression of node.value.expression.expressions) {
-						visitExpression(expression);
-					}
-					for (const quasi of node.value.expression.quasis) {
-						visitTemplateElement(quasi);
-					}
-				}
+				visitExpression(node.value.expression);
 			}
 		},
 		TaggedTemplateExpression(node: TaggedTemplateExpression) {

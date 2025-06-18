@@ -77,12 +77,12 @@ describe("`no-irregular-whitespace`", () => {
 		expect(result[0].messages).toHaveLength(1);
 	});
 
-	it.fails("should report error in conditional expressions", async () => {
-		const result = await eslint.lintText(`<div class={isActive ? "block  active" : "block"}>Content</div>`, {
+	it("should report error in conditional expressions", async () => {
+		const [result] = await eslint.lintText(`<div class={isActive ? "block  active" : "block"}>Content</div>`, {
 			filePath: "test.tsx",
 		});
-		expect.soft(result).toHaveLength(1);
-		expect.soft(result[0].messages).toHaveLength(1);
+		expect(result.messages).toHaveLength(1);
+		expect(result.messages[0].fix?.text).toBe(`"block active"`);
 	});
 
 	it("should not report error for single spaces", async () => {
