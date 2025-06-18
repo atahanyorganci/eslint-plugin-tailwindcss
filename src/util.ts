@@ -241,8 +241,17 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 	};
 }
 
+/**
+ * Configuration schema for `@yorganci/eslint-plugin-tailwindcss`.
+ */
 export const SettingsSchema = z.object({
+	/**
+	 * Path to CSS file with `@import "tailwindcss";` directive.
+	 */
 	stylesheet: z.string(),
+	/**
+	 * Regex to match class names.
+	 */
 	classRegex: z.string().default("^class(?:Name)?$"),
 });
 export type Settings = z.infer<typeof SettingsSchema>;
