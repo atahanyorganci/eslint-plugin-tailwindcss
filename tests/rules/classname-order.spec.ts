@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import type { ESLint } from "eslint";
 import { beforeAll, describe, expect, it } from "vitest";
 import { loadEslint } from "../fixtures/eslint.js";
