@@ -1,28 +1,13 @@
 {
-  description = "Nix flake port of Homebrew casks";
+  description = "Nix Flake for `@yorganci/eslint-plugin-tailwindcss`";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
-  outputs = { nixpkgs, ... }:
-    let
-      systems = nixpkgs.lib.platforms.all;
-      eachSystem = f: nixpkgs.lib.genAttrs systems (system:
-        let
-          pkgs = import nixpkgs {
-            inherit system;
-            config = {
-              allowUnfree = true;
-            };
-          };
-        in
-        f pkgs
-      );
-      darwin = nixpkgs.lib.platforms.darwin;
-      eachDarwinSystem = f: nixpkgs.lib.genAttrs darwin (system: f nixpkgs.legacyPackages.${system});
-    in
-    {
-      formatter = eachSystem (pkgs: pkgs.nixpkgs-fmt);
-      devShells = eachSystem (pkgs:
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      perSystem = { config, self', inputs', pkgs, system, ... }:
         let
           packageJson = builtins.fromJSON (builtins.readFile ./package.json);
           packageManager = builtins.elemAt (builtins.split "\\+" packageJson.packageManager) 0;
@@ -31,7 +16,7 @@
           '';
         in
         {
-          default = pkgs.mkShell {
+          devShells.default = pkgs.mkShell {
             shellHook = ''
               corepack install -g ${packageManager}
             '';
@@ -39,8 +24,9 @@
               nodejs-slim
               pnpm-shim
               just
+              nixpkgs-fmt
             ];
           };
-        });
+        };
     };
 }
