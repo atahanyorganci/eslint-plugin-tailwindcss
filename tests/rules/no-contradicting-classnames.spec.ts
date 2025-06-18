@@ -66,10 +66,13 @@ describe("`no-contradicting-classnames`", () => {
 		expect(results[0].messages).toHaveLength(2);
 	});
 
-	it.fails("should report error for conflicting border classes", async () => {
-		const code = `<div className="border-2 border-4 border-none">Content</div>`;
-		const results = await eslint.lintText(code, { filePath: "test.tsx" });
-		expect(results[0].messages).toHaveLength(2);
+	it("should report error for conflicting border classes", async () => {
+		// Unfortunately, `border-<number>` applies to `border-width` and `border-none` applies to `border-style` 💀
+		const code = `<div className="border-2 border-4 border-none border-dashed">Content</div>`;
+		const [results] = await eslint.lintText(code, { filePath: "test.tsx" });
+		expect(results.messages).toHaveLength(2);
+		expect(results.messages[0].message).toContain("'border-4' and 'border-2'");
+		expect(results.messages[1].message).toContain("'border-dashed' and 'border-none'");
 	});
 
 	it("should report error for conflicting display classes", async () => {
