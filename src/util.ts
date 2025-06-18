@@ -1,6 +1,6 @@
 import type { LanguageOptions, RuleContext, RuleDefinition, RuleVisitor, SuggestedEdit } from "@eslint/core";
 import type { Rule, SourceCode } from "eslint";
-import type { Expression, JSXAttribute, Literal, Node, TaggedTemplateExpression, TemplateElement } from "estree-jsx";
+import type { CallExpression, Expression, JSXAttribute, Literal, Node, TaggedTemplateExpression, TemplateElement } from "estree-jsx";
 import { z } from "zod";
 
 export interface Options<TMessage extends string, TNode = Node> {
@@ -208,9 +208,11 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 	const {
 		classRegex: classRegexString,
 		tags: tagsArray,
+		classFunctions: classFunctionsArray,
 	} = getSettings(context);
 	const classRegex = new RegExp(classRegexString);
 	const tags = new Set(tagsArray);
+	const classFunctions = new Set(classFunctionsArray);
 
 	return {
 		JSXAttribute(node: JSXAttribute) {
@@ -253,6 +255,19 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 				visitTemplateElement(quasi);
 			}
 		},
+		CallExpression(node: CallExpression) {
+			if (node.callee.type !== "Identifier" || !classFunctions.has(node.callee.name)) {
+				return;
+			}
+			for (const argument of node.arguments) {
+				if (argument.type !== "SpreadElement") {
+					visitExpression(argument);
+				}
+				else {
+					visitExpression(argument.argument);
+				}
+			}
+		},
 	};
 }
 
@@ -268,6 +283,10 @@ export const SettingsSchema = z.object({
 	 * Regex to match class names.
 	 */
 	classRegex: z.string().default("^class(?:Name)?$"),
+	/**
+	 * List of class functions to check for class names.
+	 */
+	classFunctions: z.string().array().default(["classnames", "clsx", "ctl", "twMerge", "twJoin", "cn"]),
 	/**
 	 * List of tags to check for class names.
 	 */

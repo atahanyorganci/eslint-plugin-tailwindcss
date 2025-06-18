@@ -66,7 +66,7 @@ describe("`no-arbitrary-value`", () => {
 		expect(results[0].messages.length).toBeGreaterThan(0);
 	});
 
-	it.fails("should handle clsx/classnames with arbitrary values", async () => {
+	it("should handle clsx/classnames with arbitrary values", async () => {
 		const code = `
 			import clsx from 'clsx';
 			<div className={clsx('bg-blue-500', 'p-[20px]', { 'text-[red]': true })}>

@@ -110,7 +110,7 @@ describe("`classname-order` (legacy conversions)", () => {
 			\${variant === SpinnerVariant.OVERLAY && \`z-60 rounded border-2 bg-gray-400 px-4 \${widthClass} \${heightClass}\`}
 			\${
 				variant === SpinnerVariant.FULLSCREEN &&
-				\`z-60 fixed bottom-0 left-0 right-0 top-0 bg-white bg-opacity-60 px-4 dark:bg-purple-900 dark:bg-opacity-60\`
+				\`bg-opacity-60 dark:bg-opacity-60 fixed top-0 right-0 bottom-0 left-0 z-60 bg-white px-4 dark:bg-purple-900\`
 			}
 		\`)`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
@@ -313,7 +313,7 @@ describe("`classname-order` (legacy conversions)", () => {
       \`);`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
-		expect(result.messages[0].fix?.text).toMatch(/flex\s+lg:w-9/);
+		expect(result.messages[0].fix?.text).toContain(/flex\s+lg:w-9/);
 	});
 
 	it.fails("should report an error for parts of template literal 2", async () => {
@@ -329,8 +329,8 @@ describe("`classname-order` (legacy conversions)", () => {
       \`);`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(2);
-		expect(result.messages[0].fix?.text).toMatch(/container\s+flex/);
-		expect(result.messages[1].fix?.text).toMatch(/sm:py-6\s+lg:py-4/);
+		expect(result.messages[0].fix?.text).toContain(/container\s+flex/);
+		expect(result.messages[1].fix?.text).toContain(/sm:py-6\s+lg:py-4/);
 	});
 
 	it("should report an error for arbitrary value but incorrect order", async () => {
@@ -366,7 +366,7 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`"absolute bottom-0 flex h-[70px] w-full flex-col"`);
 	});
 
-	it.fails("should report errors for template literal parts", async () => {
+	it("should report errors for template literal parts", async () => {
 		const code = `
       ctl(\`
         px-2
@@ -408,7 +408,7 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`"flex px-2"`);
 	});
 
-	it.fails("should report an error for template literal 2", async () => {
+	it("should report an error for template literal 2", async () => {
 		const code = `
       ctl(\`
         px-2
