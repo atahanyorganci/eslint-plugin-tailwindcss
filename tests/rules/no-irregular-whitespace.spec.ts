@@ -124,4 +124,12 @@ describe("`no-irregular-whitespace`", () => {
 		expect(result).toHaveLength(1);
 		expect(result[0].messages).toHaveLength(1);
 	});
+
+	it("should handle `tw` tagged template expression", async () => {
+		const [result] = await eslint.lintText(`tw\` block  text-red   \``, {
+			filePath: "test.tsx",
+		});
+		expect(result.messages).toHaveLength(1);
+		expect(result.messages[0].fix?.text).toBe("block text-red");
+	});
 });

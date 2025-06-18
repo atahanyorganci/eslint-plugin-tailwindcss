@@ -1,6 +1,6 @@
 import type { LanguageOptions, RuleContext, RuleDefinition, RuleVisitor, SuggestedEdit } from "@eslint/core";
 import type { Rule, SourceCode } from "eslint";
-import type { Expression, JSXAttribute, Literal, Node, TemplateElement } from "estree-jsx";
+import type { Expression, JSXAttribute, Literal, Node, TaggedTemplateExpression, TemplateElement } from "estree-jsx";
 import { z } from "zod";
 
 export interface Options<TMessage extends string, TNode = Node> {
@@ -205,8 +205,12 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 		}
 	}
 
-	const { classRegex: classRegexString } = getSettings(context);
+	const {
+		classRegex: classRegexString,
+		tags: tagsArray,
+	} = getSettings(context);
 	const classRegex = new RegExp(classRegexString);
+	const tags = new Set(tagsArray);
 
 	return {
 		JSXAttribute(node: JSXAttribute) {
@@ -238,6 +242,17 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 				}
 			}
 		},
+		TaggedTemplateExpression(node: TaggedTemplateExpression) {
+			if (node.tag.type !== "Identifier" || !tags.has(node.tag.name)) {
+				return;
+			}
+			for (const expression of node.quasi.expressions) {
+				visitExpression(expression);
+			}
+			for (const quasi of node.quasi.quasis) {
+				visitTemplateElement(quasi);
+			}
+		},
 	};
 }
 
@@ -253,6 +268,10 @@ export const SettingsSchema = z.object({
 	 * Regex to match class names.
 	 */
 	classRegex: z.string().default("^class(?:Name)?$"),
+	/**
+	 * List of tags to check for class names.
+	 */
+	tags: z.string().array().default(["tw"]),
 });
 export type Settings = z.infer<typeof SettingsSchema>;
 
