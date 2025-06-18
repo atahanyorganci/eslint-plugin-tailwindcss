@@ -58,12 +58,9 @@ describe("`no-arbitrary-value`", () => {
 	});
 
 	it.fails("should handle template literals with arbitrary values", async () => {
-		const code = `
-			const dynamicClass = \`bg-red-500 p-[\${spacing}px] text-[#ffffff]\`;
-			<div className={dynamicClass}>Content</div>
-		`;
+		const code = `const dynamicStyles = \`bg-red-500 p-[\${spacing}px] text-[#ffffff]\`;`;
 		const results = await eslint.lintText(code, { filePath: "test.tsx" });
-		expect(results[0].messages.length).toBeGreaterThan(0);
+		expect(results[0].messages).toHaveLength(2);
 	});
 
 	it("should handle clsx/classnames with arbitrary values", async () => {
