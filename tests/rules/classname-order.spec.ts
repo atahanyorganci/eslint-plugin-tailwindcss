@@ -54,9 +54,7 @@ function loadEslintTw() {
 		},
 		settings: {
 			tailwindcss: {
-				config: {
-					classRegex: "^tw$",
-				},
+				classRegex: "^tw$",
 			},
 		},
 	});
@@ -232,21 +230,21 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toContain(`"absolute bottom-0 flex w-full flex-col"`);
 	});
 
-	it("should report an error for invalid order 3", async () => {
+	it("should report an error for invalid order 2", async () => {
 		const code = `<div class="sm:w-6 container w-12">Classnames will be ordered</div>`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
 		expect(result.messages[0].fix?.text).toContain(`"container w-12 sm:w-6"`);
 	});
 
-	it("should report an error for invalid order 4", async () => {
+	it("should report an error for invalid order 3", async () => {
 		const code = `<div class="sm:py-5 p-4 sm:px-7 lg:p-8">Enhancing readability</div>`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
 		expect(result.messages[0].fix?.text).toBe(`"p-4 sm:px-7 sm:py-5 lg:p-8"`);
 	});
 
-	it.fails("should report an error for invalid order 4 with 'tw' prop", async () => {
+	it("should report an error for invalid order 4 with 'tw' prop", async () => {
 		const code = `<div tw="sm:py-5 p-4 sm:px-7 lg:p-8">Enhancing readability</div>`;
 		const [result] = await loadEslintTw().lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);

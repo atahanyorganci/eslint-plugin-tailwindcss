@@ -303,7 +303,7 @@ export const SettingsSchema = z.object({
 	 * Regex to match variable names, `const styles = "..."`
 	 */
 	identifierRegex: z.string().default("^.*styles$"),
-});
+}).strict();
 export type Settings = z.infer<typeof SettingsSchema>;
 
 export function getSettings<TMessage extends string>(context: RuleContext<Pick<Options<TMessage>, "LangOptions" | "Code" | "MessageIds" | "RuleOptions" | "Node">>) {
@@ -315,7 +315,8 @@ export function getSettings<TMessage extends string>(context: RuleContext<Pick<O
 	if (result.success) {
 		return result.data;
 	}
-	const { fieldErrors } = result.error.flatten();
-	const lines = Object.entries(fieldErrors).flatMap(([field, errors]) => errors.map(error => `❌ \`settings.tailwindcss.${field}\`: ${error}`));
-	throw new Error(["Configuration error, check `settings.tailwindcss`.", ...lines].join("\n"));
+	const { formErrors, fieldErrors } = result.error.flatten();
+	const formErrorMessages = formErrors.map(error => `❌ \`settings.tailwindcss\`: ${error}`);
+	const fieldErrorMessages = Object.entries(fieldErrors).flatMap(([field, errors]) => errors.map(error => `❌ \`settings.tailwindcss.${field}\`: ${error}`));
+	throw new Error(["Configuration error, check `settings.tailwindcss`.", ...formErrorMessages, ...fieldErrorMessages].join("\n"));
 }
