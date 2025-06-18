@@ -347,8 +347,7 @@ describe("`classname-order` (legacy conversions)", () => {
 		expect(result.messages[0].fix?.text).toBe(`"absolute bottom-0 flex h-[70px] w-full flex-col"`);
 	});
 
-	// TODO: callees
-	it.fails("should report an error for cva", async () => {
+	it("should report an error for cva", async () => {
 		const code = `cva({
 			primary: ["absolute bottom-0 w-full h-[70px] flex flex-col"],
 		})`;

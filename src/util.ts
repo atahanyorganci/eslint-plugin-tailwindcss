@@ -294,7 +294,7 @@ export const SettingsSchema = z.object({
 	/**
 	 * List of class functions to check for class names.
 	 */
-	classFunctions: z.string().array().default(["classnames", "clsx", "ctl", "twMerge", "twJoin", "cn"]),
+	classFunctions: z.string().array().default(["classnames", "clsx", "ctl", "twMerge", "twJoin", "cn", "cva"]),
 	/**
 	 * List of tags to check for class names, tw`block text-red`
 	 */
