@@ -2413,3 +2413,1685 @@ describe("`parseClassName` - Layout", () => {
 		`);
 	});
 });
+
+describe("`parseClassName` - Flexbox & Grid", () => {
+	let config: ResolvedConfig;
+
+	beforeAll(() => {
+		config = extendDefaultConfig({});
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/flex-basis
+	 */
+	it("should parse flex-basis classes", () => {
+		expect(parseClassName(config, "basis-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "basis-0",
+			  "classGroup": "basis",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "basis-1/2")).toMatchInlineSnapshot(`
+			{
+			  "args": "basis-1",
+			  "classGroup": "basis",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": "2",
+			}
+		`);
+		expect(parseClassName(config, "basis-full")).toMatchInlineSnapshot(`
+			{
+			  "args": "basis-full",
+			  "classGroup": "basis",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "basis-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "basis-auto",
+			  "classGroup": "basis",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "basis-3xs")).toMatchInlineSnapshot(`
+			{
+			  "args": "basis-3xs",
+			  "classGroup": "basis",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "basis-2xl")).toMatchInlineSnapshot(`
+			{
+			  "args": "basis-2xl",
+			  "classGroup": "basis",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "basis-[100px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "basis-[100px]",
+			  "classGroup": "basis",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/flex-direction
+	 */
+	it("should parse flex-direction classes", () => {
+		expect(parseClassName(config, "flex-row")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-row",
+			  "classGroup": "flex-direction",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "flex-row-reverse")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-row-reverse",
+			  "classGroup": "flex-direction",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "flex-col")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-col",
+			  "classGroup": "flex-direction",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "flex-col-reverse")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-col-reverse",
+			  "classGroup": "flex-direction",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/flex-wrap
+	 */
+	it("should parse flex-wrap classes", () => {
+		expect(parseClassName(config, "flex-nowrap")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-nowrap",
+			  "classGroup": "flex-wrap",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "flex-wrap")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-wrap",
+			  "classGroup": "flex-wrap",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "flex-wrap-reverse")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-wrap-reverse",
+			  "classGroup": "flex-wrap",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/flex
+	 */
+	it("should parse flex classes", () => {
+		expect(parseClassName(config, "flex-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-1",
+			  "classGroup": "flex",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "flex-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-auto",
+			  "classGroup": "flex",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "flex-initial")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-initial",
+			  "classGroup": "flex",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "flex-none")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-none",
+			  "classGroup": "flex",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "flex-[1_0_auto]")).toMatchInlineSnapshot(`
+			{
+			  "args": "flex-[1_0_auto]",
+			  "classGroup": "flex",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/flex-grow
+	 */
+	it("should parse flex-grow classes", () => {
+		expect(parseClassName(config, "grow")).toMatchInlineSnapshot(`
+			{
+			  "args": "grow",
+			  "classGroup": "grow",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grow-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "grow-0",
+			  "classGroup": "grow",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grow-3")).toMatchInlineSnapshot(`
+			{
+			  "args": "grow-3",
+			  "classGroup": "grow",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grow-[25vw]")).toMatchInlineSnapshot(`
+			{
+			  "args": "grow-[25vw]",
+			  "classGroup": "grow",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/flex-shrink
+	 */
+	it("should parse flex-shrink classes", () => {
+		expect(parseClassName(config, "shrink")).toMatchInlineSnapshot(`
+			{
+			  "args": "shrink",
+			  "classGroup": "shrink",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "shrink-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "shrink-0",
+			  "classGroup": "shrink",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "shrink-[calc(100vw-var(--sidebar))]")).toMatchInlineSnapshot(`
+			{
+			  "args": "shrink-[calc(100vw-var(--sidebar))]",
+			  "classGroup": "shrink",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/grid-template-columns
+	 */
+	it("should parse grid-template-columns classes", () => {
+		expect(parseClassName(config, "grid-cols-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-cols-1",
+			  "classGroup": "grid-cols",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grid-cols-none")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-cols-none",
+			  "classGroup": "grid-cols",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grid-cols-subgrid")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-cols-subgrid",
+			  "classGroup": "grid-cols",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grid-cols-[200px_minmax(900px,_1fr)_100px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-cols-[200px_minmax(900px,_1fr)_100px]",
+			  "classGroup": "grid-cols",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/grid-column
+	 */
+	it("should parse grid-column classes", () => {
+		expect(parseClassName(config, "col-span-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-span-1",
+			  "classGroup": "col-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-span-full")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-span-full",
+			  "classGroup": "col-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-span-[2]")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-span-[2]",
+			  "classGroup": "col-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-start-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-start-1",
+			  "classGroup": "col-start",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-col-start-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-start-1",
+			  "classGroup": "col-start",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-start-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-start-auto",
+			  "classGroup": "col-start",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-start-[2]")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-start-[2]",
+			  "classGroup": "col-start",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-end-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-end-1",
+			  "classGroup": "col-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-col-end-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-end-1",
+			  "classGroup": "col-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-end-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-end-auto",
+			  "classGroup": "col-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-end-[2]")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-end-[2]",
+			  "classGroup": "col-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-auto",
+			  "classGroup": "col-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-1",
+			  "classGroup": "col-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-col-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-1",
+			  "classGroup": "col-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "col-[1_/_span_3]")).toMatchInlineSnapshot(`
+			{
+			  "args": "col-[1_/_span_3]",
+			  "classGroup": "col-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/grid-template-rows
+	 */
+	it("should parse grid-rows classes", () => {
+		expect(parseClassName(config, "grid-rows-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-rows-1",
+			  "classGroup": "grid-rows",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grid-rows-none")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-rows-none",
+			  "classGroup": "grid-rows",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grid-rows-subgrid")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-rows-subgrid",
+			  "classGroup": "grid-rows",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(
+			parseClassName(config, "grid-rows-[200px_minmax(900px,1fr)_100px]"),
+		).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-rows-[200px_minmax(900px,1fr)_100px]",
+			  "classGroup": "grid-rows",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/grid-row
+	 */
+	it("should parse grid-row classes", () => {
+		expect(parseClassName(config, "row-span-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-span-1",
+			  "classGroup": "row-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-span-full")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-span-full",
+			  "classGroup": "row-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-span-[2]")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-span-[2]",
+			  "classGroup": "row-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-start-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-start-1",
+			  "classGroup": "row-start",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-row-start-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-start-1",
+			  "classGroup": "row-start",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-start-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-start-auto",
+			  "classGroup": "row-start",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-start-[2]")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-start-[2]",
+			  "classGroup": "row-start",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-end-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-end-1",
+			  "classGroup": "row-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-row-end-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-end-1",
+			  "classGroup": "row-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-end-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-end-auto",
+			  "classGroup": "row-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-end-[2]")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-end-[2]",
+			  "classGroup": "row-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-auto",
+			  "classGroup": "row-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-1",
+			  "classGroup": "row-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-row-1")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-1",
+			  "classGroup": "row-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "row-[span_16_/_span_16]")).toMatchInlineSnapshot(`
+			{
+			  "args": "row-[span_16_/_span_16]",
+			  "classGroup": "row-start-end",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/grid-auto-flow
+	 */
+	it("should parse grid-auto-flow classes", () => {
+		expect(parseClassName(config, "grid-flow-row")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-flow-row",
+			  "classGroup": "grid-flow",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grid-flow-col")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-flow-col",
+			  "classGroup": "grid-flow",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grid-flow-dense")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-flow-dense",
+			  "classGroup": "grid-flow",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grid-flow-row-dense")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-flow-row-dense",
+			  "classGroup": "grid-flow",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "grid-flow-col-dense")).toMatchInlineSnapshot(`
+			{
+			  "args": "grid-flow-col-dense",
+			  "classGroup": "grid-flow",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/grid-auto-columns
+	 */
+	it("should parse grid-auto-columns classes", () => {
+		expect(parseClassName(config, "auto-cols-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-cols-auto",
+			  "classGroup": "auto-cols",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "auto-cols-min")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-cols-min",
+			  "classGroup": "auto-cols",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "auto-cols-max")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-cols-max",
+			  "classGroup": "auto-cols",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "auto-cols-fr")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-cols-fr",
+			  "classGroup": "auto-cols",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "auto-cols-[100px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-cols-[100px]",
+			  "classGroup": "auto-cols",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/grid-auto-rows
+	 */
+	it("should parse grid-auto-rows classes", () => {
+		expect(parseClassName(config, "auto-rows-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-rows-auto",
+			  "classGroup": "auto-rows",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "auto-rows-min")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-rows-min",
+			  "classGroup": "auto-rows",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "auto-rows-max")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-rows-max",
+			  "classGroup": "auto-rows",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "auto-rows-fr")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-rows-fr",
+			  "classGroup": "auto-rows",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "auto-rows-[100px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "auto-rows-[100px]",
+			  "classGroup": "auto-rows",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/gap
+	 */
+	it("should parse gap classes", () => {
+		expect(parseClassName(config, "gap-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "gap-0",
+			  "classGroup": "gap",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "gap-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "gap-px",
+			  "classGroup": "gap",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "gap-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "gap-[10px]",
+			  "classGroup": "gap",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "gap-x-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "gap-x-0",
+			  "classGroup": "gap-x",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "gap-x-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "gap-x-px",
+			  "classGroup": "gap-x",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "gap-x-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "gap-x-[10px]",
+			  "classGroup": "gap-x",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "gap-y-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "gap-y-0",
+			  "classGroup": "gap-y",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "gap-y-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "gap-y-px",
+			  "classGroup": "gap-y",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "gap-y-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "gap-y-[10px]",
+			  "classGroup": "gap-y",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/justify-content
+	 */
+	it("should parse justify-content classes", () => {
+		expect(parseClassName(config, "justify-start")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-start",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-end")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-end",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-end-safe")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-end-safe",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-center")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-center",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-center-safe")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-center-safe",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-between")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-between",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-around")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-around",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-evenly")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-evenly",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-stretch")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-stretch",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-baseline")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-baseline",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-normal")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-normal",
+			  "classGroup": "justify-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/justify-items
+	 */
+	it("should parse justify-items classes", () => {
+		expect(parseClassName(config, "justify-items-start")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-items-start",
+			  "classGroup": "justify-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-items-end")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-items-end",
+			  "classGroup": "justify-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(
+			parseClassName(config, "justify-items-end-safe"),
+		).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-items-end-safe",
+			  "classGroup": "justify-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-items-center")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-items-center",
+			  "classGroup": "justify-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(
+			parseClassName(config, "justify-items-center-safe"),
+		).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-items-center-safe",
+			  "classGroup": "justify-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-items-stretch")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-items-stretch",
+			  "classGroup": "justify-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-items-normal")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-items-normal",
+			  "classGroup": "justify-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/justify-self
+	 */
+	it("should parse justify-self classes", () => {
+		expect(parseClassName(config, "justify-self-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-self-auto",
+			  "classGroup": "justify-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-self-start")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-self-start",
+			  "classGroup": "justify-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-self-center")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-self-center",
+			  "classGroup": "justify-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(
+			parseClassName(config, "justify-self-center-safe"),
+		).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-self-center-safe",
+			  "classGroup": "justify-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-self-end")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-self-end",
+			  "classGroup": "justify-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-self-end-safe")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-self-end-safe",
+			  "classGroup": "justify-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "justify-self-stretch")).toMatchInlineSnapshot(`
+			{
+			  "args": "justify-self-stretch",
+			  "classGroup": "justify-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/align-content
+	 */
+	it("should parse align-content classes", () => {
+		expect(parseClassName(config, "content-normal")).toMatchInlineSnapshot(`
+			{
+			  "args": "content-normal",
+			  "classGroup": "align-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "content-center")).toMatchInlineSnapshot(`
+			{
+			  "args": "content-center",
+			  "classGroup": "align-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "content-start")).toMatchInlineSnapshot(`
+			{
+			  "args": "content-start",
+			  "classGroup": "align-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "content-end")).toMatchInlineSnapshot(`
+			{
+			  "args": "content-end",
+			  "classGroup": "align-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "content-between")).toMatchInlineSnapshot(`
+			{
+			  "args": "content-between",
+			  "classGroup": "align-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "content-around")).toMatchInlineSnapshot(`
+			{
+			  "args": "content-around",
+			  "classGroup": "align-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "content-evenly")).toMatchInlineSnapshot(`
+			{
+			  "args": "content-evenly",
+			  "classGroup": "align-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "content-baseline")).toMatchInlineSnapshot(`
+			{
+			  "args": "content-baseline",
+			  "classGroup": "align-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "content-stretch")).toMatchInlineSnapshot(`
+			{
+			  "args": "content-stretch",
+			  "classGroup": "align-content",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/align-items
+	 */
+	it("should parse align-items classes", () => {
+		expect(parseClassName(config, "items-start")).toMatchInlineSnapshot(`
+			{
+			  "args": "items-start",
+			  "classGroup": "align-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "items-end")).toMatchInlineSnapshot(`
+			{
+			  "args": "items-end",
+			  "classGroup": "align-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "items-end-safe")).toMatchInlineSnapshot(`
+			{
+			  "args": "items-end-safe",
+			  "classGroup": "align-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "items-center")).toMatchInlineSnapshot(`
+			{
+			  "args": "items-center",
+			  "classGroup": "align-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "items-center-safe")).toMatchInlineSnapshot(`
+			{
+			  "args": "items-center-safe",
+			  "classGroup": "align-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "items-baseline")).toMatchInlineSnapshot(`
+			{
+			  "args": "items-baseline",
+			  "classGroup": "align-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "items-baseline-last")).toMatchInlineSnapshot(`
+			{
+			  "args": "items-baseline-last",
+			  "classGroup": "align-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "items-stretch")).toMatchInlineSnapshot(`
+			{
+			  "args": "items-stretch",
+			  "classGroup": "align-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/align-self
+	 */
+	it("should parse align-self classes", () => {
+		expect(parseClassName(config, "self-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "self-auto",
+			  "classGroup": "align-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "self-start")).toMatchInlineSnapshot(`
+			{
+			  "args": "self-start",
+			  "classGroup": "align-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "self-end")).toMatchInlineSnapshot(`
+			{
+			  "args": "self-end",
+			  "classGroup": "align-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "self-end-safe")).toMatchInlineSnapshot(`
+			{
+			  "args": "self-end-safe",
+			  "classGroup": "align-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "self-center")).toMatchInlineSnapshot(`
+			{
+			  "args": "self-center",
+			  "classGroup": "align-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "self-center-safe")).toMatchInlineSnapshot(`
+			{
+			  "args": "self-center-safe",
+			  "classGroup": "align-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "self-stretch")).toMatchInlineSnapshot(`
+			{
+			  "args": "self-stretch",
+			  "classGroup": "align-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "self-baseline")).toMatchInlineSnapshot(`
+			{
+			  "args": "self-baseline",
+			  "classGroup": "align-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "self-baseline-last")).toMatchInlineSnapshot(`
+			{
+			  "args": "self-baseline-last",
+			  "classGroup": "align-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/place-items
+	 */
+	it("should parse place-items classes", () => {
+		expect(parseClassName(config, "place-items-start")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-items-start",
+			  "classGroup": "place-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-items-end")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-items-end",
+			  "classGroup": "place-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-items-end-safe")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-items-end-safe",
+			  "classGroup": "place-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-items-center")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-items-center",
+			  "classGroup": "place-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(
+			parseClassName(config, "place-items-center-safe"),
+		).toMatchInlineSnapshot(`
+			{
+			  "args": "place-items-center-safe",
+			  "classGroup": "place-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-items-baseline")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-items-baseline",
+			  "classGroup": "place-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-items-stretch")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-items-stretch",
+			  "classGroup": "place-items",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/place-self
+	 */
+	it("should parse place-self classes", () => {
+		expect(parseClassName(config, "place-self-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-self-auto",
+			  "classGroup": "place-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-self-start")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-self-start",
+			  "classGroup": "place-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-self-end")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-self-end",
+			  "classGroup": "place-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-self-end-safe")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-self-end-safe",
+			  "classGroup": "place-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-self-center")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-self-center",
+			  "classGroup": "place-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(
+			parseClassName(config, "place-self-center-safe"),
+		).toMatchInlineSnapshot(`
+			{
+			  "args": "place-self-center-safe",
+			  "classGroup": "place-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "place-self-stretch")).toMatchInlineSnapshot(`
+			{
+			  "args": "place-self-stretch",
+			  "classGroup": "place-self",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+});
