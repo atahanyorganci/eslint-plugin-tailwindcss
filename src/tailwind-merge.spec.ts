@@ -40,7 +40,7 @@ describe("`parseClassName`", () => {
 			  "hasImportantModifier": false,
 			  "isExternal": false,
 			  "modifiers": [],
-			  "postfixModifier": "2",
+			  "postfixModifier": undefined,
 			}
 		`);
 		expect(parseClassName(config, "aspect-4/3")).toMatchInlineSnapshot(`
@@ -50,7 +50,7 @@ describe("`parseClassName`", () => {
 			  "hasImportantModifier": false,
 			  "isExternal": false,
 			  "modifiers": [],
-			  "postfixModifier": "3",
+			  "postfixModifier": undefined,
 			}
 		`);
 		expect(parseClassName(config, "aspect-16/9")).toMatchInlineSnapshot(`
@@ -60,7 +60,7 @@ describe("`parseClassName`", () => {
 			  "hasImportantModifier": false,
 			  "isExternal": false,
 			  "modifiers": [],
-			  "postfixModifier": "9",
+			  "postfixModifier": undefined,
 			}
 		`);
 		expect(parseClassName(config, "aspect-[1/2]")).toMatchInlineSnapshot(`

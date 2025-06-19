@@ -114,7 +114,20 @@ export function parseClassName(config: ResolvedConfig, className: string): Parse
 	const classWithOutModifiers = modifiers.length === 0 ? className : className.substring(modifierStart);
 	const [baseClassName, hasImportantModifier] = stripImportantModifier(classWithOutModifiers);
 
-	const classGroup = parseClassIntoGroupAndArg(config, baseClassName);
+	let baseClassNameStripped;
+	let postfixModifier: string | undefined;
+	if (postfixModifierPosition && postfixModifierPosition > modifierStart) {
+		baseClassNameStripped = baseClassName.substring(0, postfixModifierPosition - modifierStart);
+		postfixModifier = className.substring(postfixModifierPosition + 1);
+	}
+	else {
+		baseClassNameStripped = baseClassName;
+	}
+	let classGroup = parseClassIntoGroupAndArg(config, baseClassNameStripped);
+	if (!classGroup) {
+		classGroup = parseClassIntoGroupAndArg(config, baseClassName);
+		postfixModifier = undefined;
+	}
 	if (!classGroup?.group) {
 		return {
 			isExternal: true,
@@ -123,11 +136,6 @@ export function parseClassName(config: ResolvedConfig, className: string): Parse
 	}
 	if (!classGroup.arg) {
 		throw new Error("Class group must have an argument");
-	}
-
-	let postfixModifier: string | undefined;
-	if (postfixModifierPosition && postfixModifierPosition > modifierStart) {
-		postfixModifier = className.substring(postfixModifierPosition + 1);
 	}
 
 	return {
