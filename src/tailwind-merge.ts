@@ -3,16 +3,21 @@
 /* eslint-disable regexp/no-unused-capturing-group */
 /**
  * Type of the result returned by the `parseClassName` function.
- *
- * This is an experimental feature and may introduce breaking changes in any minor version update.
  */
-export interface ParsedClassName {
+export type ParsedClassName = TailwindClass | ExternalClass;
+
+export interface ExternalClass {
+	isExternal: true;
 	/**
-	 * Whether the class is external and merging logic should be sipped.
+	 * The class name that is not a Tailwind class.
 	 *
-	 * If this is `true`, the class will be treated as if it wasn't a Tailwind class and will be passed through as is.
+	 * @example "custom-class" // for `custom-class`
 	 */
-	isExternal?: boolean;
+	className: string;
+}
+
+export interface TailwindClass {
+	isExternal: false;
 	/**
 	 * Modifiers of the class in the order they appear in the class.
 	 *
@@ -22,26 +27,27 @@ export interface ParsedClassName {
 	/**
 	 * Whether the class has an `!important` modifier.
 	 *
-	 * @example true // for `hover:dark:!bg-gray-100`
+	 * @example true // for `hover:dark:bg-gray-100!`
 	 */
 	hasImportantModifier: boolean;
 	/**
-	 * Base class without preceding modifiers.
+	 * Class group of the class.
 	 *
-	 * @example 'bg-gray-100' // for `hover:dark:bg-gray-100`
+	 * @example 'bg' // for `hover:dark:bg-gray-100`
 	 */
-	baseClassName: string;
+	classGroup: string;
 	/**
-	 * Index position of a possible postfix modifier in the class.
-	 * If the class has no postfix modifier, this is `undefined`.
+	 * Arguments of the class.
 	 *
-	 * This property is prefixed with "maybe" because tailwind-merge does not know whether something is a postfix modifier or part of the base class since it's possible to configure Tailwind CSS classes which include a `/` in the base class name.
-	 *
-	 * If a `maybePostfixModifierPosition` is present, tailwind-merge first tries to match the `baseClassName` without the possible postfix modifier to a class group. If that fails, it tries again with the possible postfix modifier.
-	 *
-	 * @example 11 // for `bg-gray-100/50`
+	 * @example 'gray-100' // for `hover:dark:bg-gray-100`
 	 */
-	maybePostfixModifierPosition: number | undefined;
+	args: string;
+	/**
+	 * Postfix modifier of the class, if any. Mostly used for opacity.
+	 *
+	 * @example '50' // for `bg-gray-100/50`
+	 */
+	postfixModifier?: string;
 }
 
 export const IMPORTANT_MODIFIER = "!";
@@ -56,16 +62,13 @@ export const ARBITRARY_VALUE_REGEX = /\[(?:(\w[\w-]*):)?(.+)\]/;
  * Inspired by `splitAtTopLevelOnly` used in Tailwind CSS
  * @see https://github.com/tailwindlabs/tailwindcss/blob/v3.2.2/src/util/splitAtTopLevelOnly.js
  */
-export function parseClassName({ prefix }: Pick<Config, "prefix">, className: string): ParsedClassName {
-	if (prefix) {
-		const fullPrefix = prefix + MODIFIER_SEPARATOR;
+export function parseClassName(config: ResolvedConfig, className: string): ParsedClassName {
+	if (config.prefix) {
+		const fullPrefix = config.prefix + MODIFIER_SEPARATOR;
 		if (!className.startsWith(fullPrefix)) {
 			return {
 				isExternal: true,
-				modifiers: [],
-				hasImportantModifier: false,
-				baseClassName: className,
-				maybePostfixModifierPosition: undefined,
+				className,
 			};
 		}
 		className = className.substring(fullPrefix.length);
@@ -108,18 +111,32 @@ export function parseClassName({ prefix }: Pick<Config, "prefix">, className: st
 		}
 	}
 
-	const baseClassNameWithImportantModifier = modifiers.length === 0 ? className : className.substring(modifierStart);
-	const [baseClassName, hasImportantModifier] = stripImportantModifier(baseClassNameWithImportantModifier);
-	const maybePostfixModifierPosition
-			= postfixModifierPosition && postfixModifierPosition > modifierStart
-				? postfixModifierPosition - modifierStart
-				: undefined;
+	const classWithOutModifiers = modifiers.length === 0 ? className : className.substring(modifierStart);
+	const [baseClassName, hasImportantModifier] = stripImportantModifier(classWithOutModifiers);
+
+	const classGroup = parseClassIntoGroupAndArg(config, baseClassName);
+	if (!classGroup?.group) {
+		return {
+			isExternal: true,
+			className,
+		};
+	}
+	if (!classGroup.arg) {
+		throw new Error("Class group must have an argument");
+	}
+
+	let postfixModifier: string | undefined;
+	if (postfixModifierPosition && postfixModifierPosition > modifierStart) {
+		postfixModifier = className.substring(postfixModifierPosition + 1);
+	}
 
 	return {
+		isExternal: false,
 		modifiers,
 		hasImportantModifier,
-		baseClassName,
-		maybePostfixModifierPosition,
+		classGroup: classGroup.group,
+		args: classGroup.arg,
+		postfixModifier,
 	};
 }
 
@@ -233,52 +250,64 @@ type PartialPartial<T> = {
 
 const CLASS_PART_SEPARATOR = "-";
 
-function createClassGroupUtilsFromConfig({ conflictingClassGroups, conflictingClassGroupModifiers, ...config }: Config) {
-	const classMap = createClassMap(config);
+export function parseClassIntoGroupAndArg({ classMap }: ResolvedConfig, className: string): BBB | undefined {
+	const classParts = className.split(CLASS_PART_SEPARATOR);
 
-	const getClassGroupId = (className: string) => {
-		const classParts = className.split(CLASS_PART_SEPARATOR);
+	// Classes like `-inset-1` produce an empty string as first classPart. We assume that classes for negative values are used correctly and remove it from classParts.
+	if (classParts[0] === "" && classParts.length !== 1) {
+		classParts.shift();
+	}
 
-		// Classes like `-inset-1` produce an empty string as first classPart. We assume that classes for negative values are used correctly and remove it from classParts.
-		if (classParts[0] === "" && classParts.length !== 1) {
-			classParts.shift();
-		}
-
-		return getGroupRecursive(classParts, classMap) || getGroupIdForArbitraryProperty(className);
-	};
-
-	const getConflictingClassGroupIds = (
-		classGroupId: string,
-		hasPostfixModifier: boolean,
-	) => {
-		const conflicts = conflictingClassGroups[classGroupId] || [];
-
-		if (hasPostfixModifier && conflictingClassGroupModifiers[classGroupId]) {
-			return [...conflicts, ...conflictingClassGroupModifiers[classGroupId]!];
-		}
-
-		return conflicts;
-	};
-
-	return {
-		getClassGroupId,
-		getConflictingClassGroupIds,
-	};
+	const group = parseClassIntoGroupAndArgRecursive(classParts, classMap);
+	if (group && group.arg && group.group) {
+		return {
+			group: group.group,
+			arg: group.arg,
+		};
+	}
+	return getGroupIdForArbitraryProperty(className);
 }
 
-function getGroupRecursive(classParts: string[], classPartObject: ClassPartObject): string | undefined {
+export function getConflictingClassGroupIds(
+	{ conflictingClassGroups, conflictingClassGroupModifiers }: ResolvedConfig,
+	classGroupId: string,
+	hasPostfixModifier: boolean,
+) {
+	const conflicts = conflictingClassGroups[classGroupId] || [];
+
+	if (hasPostfixModifier && conflictingClassGroupModifiers[classGroupId]) {
+		return [...conflicts, ...conflictingClassGroupModifiers[classGroupId]!];
+	}
+
+	return conflicts;
+}
+
+interface BBB {
+	group: string;
+	arg: string;
+}
+
+function parseClassIntoGroupAndArgRecursive(classParts: string[], classPartObject: ClassPartObject): Partial<BBB> | undefined {
 	if (classParts.length === 0) {
-		return classPartObject.classGroupId;
+		if (!classPartObject.classGroupId) {
+			return;
+		}
+		return {
+			group: classPartObject.classGroupId,
+		};
 	}
 
 	const currentClassPart = classParts[0]!;
 	const nextClassPartObject = classPartObject.nextPart.get(currentClassPart);
 	const classGroupFromNextClassPart = nextClassPartObject
-		? getGroupRecursive(classParts.slice(1), nextClassPartObject)
+		? parseClassIntoGroupAndArgRecursive(classParts.slice(1), nextClassPartObject)
 		: undefined;
 
 	if (classGroupFromNextClassPart) {
-		return classGroupFromNextClassPart;
+		return {
+			...classGroupFromNextClassPart,
+			arg: classParts.join(CLASS_PART_SEPARATOR),
+		};
 	}
 
 	if (classPartObject.validators.length === 0) {
@@ -286,13 +315,19 @@ function getGroupRecursive(classParts: string[], classPartObject: ClassPartObjec
 	}
 
 	const classRest = classParts.join(CLASS_PART_SEPARATOR);
-
-	return classPartObject.validators.find(({ validator }) => validator(classRest))?.classGroupId;
+	const validator = classPartObject.validators.find(({ validator }) => validator(classRest));
+	if (!validator) {
+		return;
+	}
+	return {
+		group: validator.classGroupId,
+		arg: classRest,
+	};
 }
 
 const arbitraryPropertyRegex = /^\[(.+)\]$/;
 
-function getGroupIdForArbitraryProperty(className: string) {
+function getGroupIdForArbitraryProperty(className: string): BBB | undefined {
 	if (arbitraryPropertyRegex.test(className)) {
 		const arbitraryPropertyClassName = arbitraryPropertyRegex.exec(className)![1];
 		const property = arbitraryPropertyClassName?.substring(
@@ -302,14 +337,18 @@ function getGroupIdForArbitraryProperty(className: string) {
 
 		if (property) {
 			// I use two dots here because one dot is used as prefix for class groups in plugins
-			return `arbitrary..${property}`;
+			return {
+				group: `arbitrary..${property}`,
+				arg: className,
+			};
 		}
 	}
 }
 
-/**
- * Exported for testing only
- */
+export interface ResolvedConfig extends Config {
+	classMap: ClassPartObject;
+}
+
 function createClassMap({ theme, classGroups }: Pick<Config, "theme" | "classGroups">) {
 	const classMap: ClassPartObject = {
 		nextPart: new Map<string, ClassPartObject>(),
@@ -517,8 +556,12 @@ function fromTheme(key: string): ThemeGetter {
 	return themeGetter;
 }
 
-export function createConfig(config: Config): Config {
-	return config;
+export function createConfig(config: Config): ResolvedConfig {
+	const classMap = createClassMap(config);
+	return {
+		...config,
+		classMap,
+	};
 }
 
 export function getDefaultConfig(): Config {
@@ -759,7 +802,7 @@ export function getDefaultConfig(): Config {
 			 * @see https://tailwindcss.com/docs/columns
 			 */
 			"columns": [
-				{ columns: [isNumber, isArbitraryValue, isArbitraryVariable, themeContainer] },
+				{ columns: [isNumber, isArbitraryValue, isArbitraryVariable, themeContainer, "auto"] },
 			],
 			/**
 			 * Break After
@@ -2850,11 +2893,6 @@ export function getDefaultConfig(): Config {
 	} as const satisfies Config;
 }
 
-export function createClassGroupUtils() {
-	const config = getDefaultConfig();
-	return createClassGroupUtilsFromConfig(config);
-}
-
 function createSortModifiersFromConfig(config: Config) {
 	const orderSensitiveModifiers = Object.fromEntries(
 		config.orderSensitiveModifiers.map(modifier => [modifier, true]),
@@ -2894,14 +2932,19 @@ export function createSortModifiers() {
 }
 
 /**
- * @param baseConfig Config where other config will be merged into. This object will be mutated.
- * @param configExtension Partial config to merge into the `baseConfig`.
+ * Extends the default config with the given config extension.
+ *
+ * @param configExtension - The config extension to extend the default config with.
+ * @param configExtension.prefix - The prefix to add to all class names.
+ * @param configExtension.extend - The config extension to extend the default config with.
+ * @param configExtension.override - The config override to apply to the default config.
+ * @returns The extended and resolved config.
  */
 export function extendDefaultConfig({
 	prefix,
 	extend = {},
 	override = {},
-}: ConfigExtension) {
+}: ConfigExtension): ResolvedConfig {
 	const baseConfig = getDefaultConfig();
 	overrideProperty(baseConfig, "prefix", prefix);
 
@@ -2923,7 +2966,11 @@ export function extendDefaultConfig({
 	);
 	mergeArrayProperties(baseConfig, extend, "orderSensitiveModifiers");
 
-	return baseConfig;
+	const classMap = createClassMap(baseConfig);
+	return {
+		...baseConfig,
+		classMap,
+	};
 }
 
 function overrideProperty<T extends object, K extends keyof T>(baseObject: T,	overrideKey: K,	overrideValue: T[K] | undefined) {
