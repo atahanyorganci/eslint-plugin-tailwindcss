@@ -1,4 +1,4 @@
-import { createParseClassname } from "../tailwind-merge.js";
+import { parseClassName } from "../tailwind-merge.js";
 import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
 const COMBINABLE = /^-?(?<baseClass>w|h|mx|my|px|py|mt|ml|mr|mb)-(?<value>.+)$/;
@@ -38,12 +38,11 @@ const shorthand = defineRule({
 		return createVisitor({
 			context,
 			visitClassValue: ({ value, report }) => {
-				const parseClassname = createParseClassname();
 				const { leading, classnames, whitespaces } = splitClassValueToParts(value);
 				const classIndexes = new Map(classnames.map((classname, i) => [classname, i]));
 
 				for (const [classname, index] of classIndexes.entries()) {
-					const { baseClassName } = parseClassname(classname);
+					const { baseClassName } = parseClassName(classname);
 					// Find the base class that can be combined with another class
 					const match = matchCombinableClass(baseClassName);
 					if (!match) {

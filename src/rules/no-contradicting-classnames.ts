@@ -1,9 +1,9 @@
 import {
 	createClassGroupUtils,
-	createParseClassname,
 	createSortModifiers,
 	IMPORTANT_MODIFIER,
 	MODIFIER_SEPARATOR,
+	parseClassName,
 } from "../tailwind-merge.js";
 import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
@@ -20,7 +20,6 @@ const noContradictingClassnames = defineRule({
 		},
 	},
 	create(context) {
-		const parseClassname = createParseClassname();
 		const {
 			getClassGroupId,
 			getConflictingClassGroupIds,
@@ -39,7 +38,7 @@ const noContradictingClassnames = defineRule({
 						hasImportantModifier,
 						maybePostfixModifierPosition,
 						modifiers,
-					} = parseClassname(classname);
+					} = parseClassName(classname);
 
 					let hasPostfixModifier = !!maybePostfixModifierPosition;
 					const classWithoutModifier = hasPostfixModifier

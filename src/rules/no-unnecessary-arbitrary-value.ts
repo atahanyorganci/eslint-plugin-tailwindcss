@@ -1,5 +1,5 @@
 import type { ParsedClassName } from "../tailwind-merge.js";
-import { createParseClassname } from "../tailwind-merge.js";
+import { parseClassName } from "../tailwind-merge.js";
 import { createVisitor, defineRule, joinClassValueParts, splitClassValueToParts } from "../util.js";
 
 const REPLACERS = {
@@ -43,12 +43,11 @@ const noUnnecessaryArbitraryValue = defineRule({
 		return createVisitor({
 			context,
 			visitClassValue: ({ value, report }) => {
-				const parseClassname = createParseClassname();
 				const { leading, classnames, whitespaces } = splitClassValueToParts(value);
 
 				for (let i = 0; i < classnames.length; i++) {
 					const classname = classnames[i]!;
-					const replacement = tryReplaceArbitraryValue(classname, parseClassname(classname));
+					const replacement = tryReplaceArbitraryValue(classname, parseClassName(classname));
 					if (!replacement) {
 						continue;
 					}

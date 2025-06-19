@@ -1,4 +1,4 @@
-import { createClassGroupUtils, createParseClassname } from "../tailwind-merge.js";
+import { createClassGroupUtils, parseClassName } from "../tailwind-merge.js";
 import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
 const noCustomClassname = defineRule({
@@ -14,7 +14,6 @@ const noCustomClassname = defineRule({
 		},
 	},
 	create(context) {
-		const parseClassname = createParseClassname();
 		const { getClassGroupId } = createClassGroupUtils();
 
 		return createVisitor({
@@ -23,7 +22,7 @@ const noCustomClassname = defineRule({
 				const { classnames } = splitClassValueToParts(value);
 
 				for (const classname of classnames) {
-					const { baseClassName, maybePostfixModifierPosition } = parseClassname(classname);
+					const { baseClassName, maybePostfixModifierPosition } = parseClassName(classname);
 
 					const hasPostfixModifier = !!maybePostfixModifierPosition;
 					const classWithoutModifier = hasPostfixModifier

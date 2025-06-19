@@ -125,7 +125,7 @@ describe("`no-contradicting-classnames`", () => {
 	});
 
 	it("should handle conflicting classes with important modifier", async () => {
-		const code = `<div className="!w-4 !w-6">Content</div>`;
+		const code = `<div className="w-4! w-6!">Content</div>`;
 		const results = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(results[0].messages).toHaveLength(1);
 	});

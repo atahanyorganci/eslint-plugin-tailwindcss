@@ -168,7 +168,7 @@ describe("`no-custom-classname`", () => {
 
 	it("should handle important modifier", async () => {
 		const code = `
-			<div className="!bg-blue-500 !custom-important" />
+			<div className="bg-blue-500! custom-important!" />
 		`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(1);
