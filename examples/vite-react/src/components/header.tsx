@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import Counter from "./counter";
 
 const Header: FC = () => (
 	// eslint-disable-next-line tailwindcss/no-unnecessary-arbitrary-value
@@ -11,6 +12,7 @@ const Header: FC = () => (
 		</p>
 		{/* eslint-disable-next-line tailwindcss/no-unnecessary-negative-arbitrary-value */}
 		<span className="absolute top-[-4px] right-[-4px] size-2 bg-red-500" />
+		<Counter />
 	</div>
 );
 
