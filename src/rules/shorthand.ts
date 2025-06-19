@@ -37,35 +37,63 @@ const shorthand = defineRule({
 			context,
 			visitClassValue: ({ value, report }) => {
 				const parseClassname = createParseClassname();
-				const { classnames } = splitClassValueToParts(value);
-				const uniqueClassnames = new Set(classnames);
+				const { leading, classnames, whitespaces } = splitClassValueToParts(value);
+				const classIndexes = new Map(classnames.map((classname, i) => [classname, i]));
 
-				for (const classname of uniqueClassnames) {
+				for (const [classname, index] of classIndexes.entries()) {
 					const { baseClassName } = parseClassname(classname);
+					// Find the base class that can be combined with another class
 					const match = matchCombinableClass(baseClassName);
 					if (!match) {
 						continue;
 					}
+					// Find the pair class that can be combined with the base class
 					const pairBaseClass = PAIRS[match.baseClass];
 					if (!pairBaseClass) {
 						continue;
 					}
-					const replacementValue = baseClassName.replace(match.baseClass, pairBaseClass.pair);
-					const pair = classname.replace(baseClassName, replacementValue);
-
-					if (uniqueClassnames.has(pair)) {
-						const replacementValue = baseClassName.replace(match.baseClass, pairBaseClass.shorthand);
-						const shorthand = classname.replace(baseClassName, replacementValue);
-
-						report({
-							messageId: "shorthandCandidate",
-							data: {
-								first: pair,
-								second: classname,
-								shorthand,
-							},
-						});
+					// Replace the base class with the pair class
+					const basePairValue = baseClassName.replace(match.baseClass, pairBaseClass.pair);
+					const pair = classname.replace(baseClassName, basePairValue);
+					const pairIndex = classIndexes.get(pair);
+					if (typeof pairIndex !== "number") {
+						continue;
 					}
+					// Replace the base class with the shorthand class
+					const baseShorthandValue = baseClassName.replace(match.baseClass, pairBaseClass.shorthand);
+					const shorthand = classname.replace(baseClassName, baseShorthandValue);
+
+					// Reassemble the class value with the new classname
+					const parts = leading ? [leading] : [];
+					for (let i = 0; i < classnames.length; i++) {
+						if (i === pairIndex) {
+							continue;
+						}
+						const classname = classnames[i]!;
+						if (i === index) {
+							parts.push(shorthand);
+						}
+						else {
+							parts.push(classname);
+						}
+						const whitespace = whitespaces[i];
+						if (whitespace) {
+							parts.push(whitespace);
+						}
+					}
+
+					report({
+						messageId: "shorthandCandidate",
+						data: {
+							first: pair,
+							second: classname,
+							shorthand,
+						},
+						fix: {
+							type: "value",
+							value: parts.join(""),
+						},
+					});
 				}
 			},
 		});
