@@ -1,4 +1,4 @@
-import { createVisitor, defineRule } from "../util.js";
+import { defineRule } from "../util.js";
 
 const START = /^\s+/;
 const CONSECUTIVE = /\s{2,}/;
@@ -18,26 +18,16 @@ const noIrregularWhitespace = defineRule({
 		},
 		fixable: "code",
 	},
-	create(context) {
-		return createVisitor({
-			context,
-			visitClassValue: ({ value, report }) => {
-				if (
-					START.test(value)
-					|| CONSECUTIVE.test(value)
-					|| END.test(value)
-					|| NON_SPACE_WHITESPACE.test(value)
-				) {
-					report({
-						messageId: "irregularWhitespace",
-						fix: {
-							type: "value",
-							value: value.trim().replace(/\s+/g, " "),
-						},
-					});
-				}
-			},
-		});
+	visit({ value, report }) {
+		if (START.test(value) || CONSECUTIVE.test(value) || END.test(value) || NON_SPACE_WHITESPACE.test(value)) {
+			report({
+				messageId: "irregularWhitespace",
+				fix: {
+					type: "value",
+					value: value.trim().replace(/\s+/g, " "),
+				},
+			});
+		}
 	},
 });
 

@@ -1,5 +1,5 @@
 import Counter from "../counter.js";
-import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
+import { defineRule, splitClassValueToParts } from "../util.js";
 
 const noDuplicateClassnames = defineRule({
 	meta: {
@@ -14,34 +14,29 @@ const noDuplicateClassnames = defineRule({
 		},
 		fixable: "code",
 	},
-	create(context) {
-		return createVisitor({
-			context,
-			visitClassValue: ({ value, report }) => {
-				const { classnames } = splitClassValueToParts(value);
-				const classnameCounts = new Counter(classnames);
-				if (classnames.length === classnameCounts.size) {
-					return;
-				}
+	visit({ value, report }) {
+		const { classnames } = splitClassValueToParts(value);
+		const classnameCounts = new Counter(classnames);
+		if (classnames.length === classnameCounts.size) {
+			return;
+		}
 
-				const unique = Array.from(classnameCounts.keys()).join(" ");
-				for (const [classname, count] of classnameCounts.entries()) {
-					if (count === 1) {
-						continue;
-					}
-					report({
-						messageId: "duplicateClassname",
-						data: {
-							classname,
-						},
-						fix: {
-							type: "value",
-							value: unique,
-						},
-					});
-				}
-			},
-		});
+		const unique = Array.from(classnameCounts.keys()).join(" ");
+		for (const [classname, count] of classnameCounts.entries()) {
+			if (count === 1) {
+				continue;
+			}
+			report({
+				messageId: "duplicateClassname",
+				data: {
+					classname,
+				},
+				fix: {
+					type: "value",
+					value: unique,
+				},
+			});
+		}
 	},
 });
 

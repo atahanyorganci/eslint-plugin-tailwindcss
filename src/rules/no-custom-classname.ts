@@ -1,6 +1,5 @@
-import { getTailwindPrefix } from "../prettier/index.js";
-import { extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
-import { createVisitor, defineRule, getSettings, splitClassValueToParts } from "../util.js";
+import { parseClassName } from "../tailwind-merge.js";
+import { defineRule, splitClassValueToParts } from "../util.js";
 
 const noCustomClassname = defineRule({
 	meta: {
@@ -14,30 +13,21 @@ const noCustomClassname = defineRule({
 			customClassname: `Classname '{{classname}}' is not a Tailwind CSS class!`,
 		},
 	},
-	create(context) {
-		const { stylesheet } = getSettings(context);
-		const prefix = getTailwindPrefix({ stylesheet });
-		const config = extendDefaultConfig({ prefix });
+	visit({ config, value, report }) {
+		const { classnames } = splitClassValueToParts(value);
 
-		return createVisitor({
-			context,
-			visitClassValue: ({ value, report }) => {
-				const { classnames } = splitClassValueToParts(value);
-
-				for (const classname of classnames) {
-					const { isExternal } = parseClassName(config, classname);
-					if (!isExternal) {
-						continue;
-					}
-					report({
-						messageId: "customClassname",
-						data: {
-							classname,
-						},
-					});
-				}
-			},
-		});
+		for (const classname of classnames) {
+			const { isExternal } = parseClassName(config, classname);
+			if (!isExternal) {
+				continue;
+			}
+			report({
+				messageId: "customClassname",
+				data: {
+					classname,
+				},
+			});
+		}
 	},
 });
 

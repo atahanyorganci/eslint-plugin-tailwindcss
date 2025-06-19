@@ -1,7 +1,10 @@
 import type { LanguageOptions, RuleContext, RuleDefinition, RuleVisitor, SuggestedEdit } from "@eslint/core";
 import type { Rule, SourceCode } from "eslint";
 import type { CallExpression, Expression, JSXAttribute, Literal, Node, TaggedTemplateExpression, TemplateElement, VariableDeclarator } from "estree-jsx";
+import type { ResolvedConfig } from "./tailwind-merge.js";
 import { z } from "zod";
+import { getTailwindPrefix } from "./prettier/index.js";
+import { extendDefaultConfig } from "./tailwind-merge.js";
 
 export function arrayEquals<T>(a: T[], b: T[]): boolean {
 	return a.length === b.length && a.every((value, i) => value === b[i]);
@@ -64,8 +67,35 @@ export interface Options<TMessage extends string, TNode = Node> {
 	};
 }
 
-export function defineRule<TMessage extends string>(rule: RuleDefinition<Options<TMessage>>): Rule.RuleModule {
-	return rule;
+export interface VisitFunctionArgs<TMessage extends string> {
+	value: string;
+	config: ResolvedConfig;
+	settings: Settings;
+	report: (report: Report<TMessage>) => void;
+}
+
+export type VisitFunction<TMessage extends string> = (args: VisitFunctionArgs<TMessage>) => void;
+
+export interface RuleDefinition2<TMessage extends string> extends Omit<RuleDefinition<Options<TMessage>>, "create"> {
+	visit: VisitFunction<TMessage>;
+}
+
+export function defineRule<TMessage extends string>({ visit, ...rule }: RuleDefinition2<TMessage>): Rule.RuleModule {
+	return {
+		...rule,
+		create(context) {
+			const settings = getSettings(context);
+			const prefix = getTailwindPrefix({ stylesheet: settings.stylesheet });
+			const config = extendDefaultConfig({ prefix });
+
+			return createVisitor({
+				context,
+				visit: ({ value, report }) => {
+					visit({ value, report, settings, config });
+				},
+			});
+		},
+	};
 }
 
 export interface Report<TMessage extends string> {
@@ -80,15 +110,15 @@ export interface Report<TMessage extends string> {
 
 export interface Visitor<TMessage extends string, TOptions extends Options<TMessage>> {
 	context: RuleContext<Omit<TOptions, "Visitor" | "ExtRuleDocs">>;
-	visitClassValue: (args: { value: string; report: (report: Report<TMessage>) => void }) => void;
+	visit: (args: { value: string; report: (report: Report<TMessage>) => void }) => void;
 }
 
-export function createVisitor<TMessage extends string, TOptions extends Options<TMessage>>({ context, visitClassValue }: Visitor<TMessage, TOptions>): TOptions["Visitor"] {
+export function createVisitor<TMessage extends string, TOptions extends Options<TMessage>>({ context, visit }: Visitor<TMessage, TOptions>): TOptions["Visitor"] {
 	function visitTemplateElement(quasi: TemplateElement): void {
 		if (typeof quasi.value.raw !== "string") {
 			return;
 		}
-		visitClassValue({
+		visit({
 			value: quasi.value.raw,
 			report: ({ fix, ...report }) => {
 				if (!quasi.range) {
@@ -112,7 +142,7 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 		if (typeof node.value !== "string" || typeof node.raw !== "string") {
 			return;
 		}
-		visitClassValue({
+		visit({
 			value: node.value,
 			report: ({ fix, ...report }) => {
 				context.report({

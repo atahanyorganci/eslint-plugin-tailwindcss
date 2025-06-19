@@ -1,7 +1,6 @@
 import type { TailwindClass } from "../tailwind-merge.js";
-import { getTailwindPrefix } from "../prettier/index.js";
-import { extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
-import { createVisitor, defineRule, getSettings, joinClassValueParts, splitClassValueToParts } from "../util.js";
+import { parseClassName } from "../tailwind-merge.js";
+import { defineRule, joinClassValueParts, splitClassValueToParts } from "../util.js";
 
 const NEGATIVE_UTILITIES = new Set([
 	/**
@@ -81,45 +80,36 @@ const noUnnecessaryNegativeArbitraryValue = defineRule({
 		},
 		fixable: "code",
 	},
-	create(context) {
-		const { stylesheet } = getSettings(context);
-		const prefix = getTailwindPrefix({ stylesheet });
-		const config = extendDefaultConfig({ prefix });
+	visit({ config, value, report }) {
+		const { leading, classnames, whitespaces } = splitClassValueToParts(value);
 
-		return createVisitor({
-			context,
-			visitClassValue: ({ value, report }) => {
-				const { leading, classnames, whitespaces } = splitClassValueToParts(value);
-
-				for (let i = 0; i < classnames.length; i++) {
-					const classname = classnames[i]!;
-					const parsed = parseClassName(config, classname);
-					if (parsed.isExternal) {
-						continue;
-					}
-					const replacement = tryReplaceNegativeArbitraryValue(classname, parsed);
-					if (!replacement) {
-						continue;
-					}
-					const fixed = joinClassValueParts({
-						leading,
-						classnames: [...classnames.slice(0, i), replacement, ...classnames.slice(i + 1)],
-						whitespaces,
-					});
-					report({
-						messageId: "unnecessaryNegativeArbitraryValue",
-						data: {
-							classname,
-							replacement,
-						},
-						fix: {
-							type: "value",
-							value: fixed,
-						},
-					});
-				}
-			},
-		});
+		for (let i = 0; i < classnames.length; i++) {
+			const classname = classnames[i]!;
+			const parsed = parseClassName(config, classname);
+			if (parsed.isExternal) {
+				continue;
+			}
+			const replacement = tryReplaceNegativeArbitraryValue(classname, parsed);
+			if (!replacement) {
+				continue;
+			}
+			const fixed = joinClassValueParts({
+				leading,
+				classnames: [...classnames.slice(0, i), replacement, ...classnames.slice(i + 1)],
+				whitespaces,
+			});
+			report({
+				messageId: "unnecessaryNegativeArbitraryValue",
+				data: {
+					classname,
+					replacement,
+				},
+				fix: {
+					type: "value",
+					value: fixed,
+				},
+			});
+		}
 	},
 });
 

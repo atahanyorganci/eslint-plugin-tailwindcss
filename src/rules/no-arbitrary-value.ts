@@ -1,6 +1,5 @@
-import { getTailwindPrefix } from "../prettier/index.js";
-import { ARBITRARY_VALUE_REGEX, extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
-import { createVisitor, defineRule, getSettings, splitClassValueToParts } from "../util.js";
+import { ARBITRARY_VALUE_REGEX, parseClassName } from "../tailwind-merge.js";
+import { defineRule, splitClassValueToParts } from "../util.js";
 
 const noArbitraryValue = defineRule({
 	meta: {
@@ -14,30 +13,21 @@ const noArbitraryValue = defineRule({
 			arbitraryValue: `Class '{{classname}}' has arbitrary value.`,
 		},
 	},
-	create(context) {
-		const { stylesheet } = getSettings(context);
-		const prefix = getTailwindPrefix({ stylesheet });
-		const config = extendDefaultConfig({ prefix });
+	visit({ config, value, report }) {
+		const { classnames } = splitClassValueToParts(value);
 
-		return createVisitor({
-			context,
-			visitClassValue: ({ value, report }) => {
-				const { classnames } = splitClassValueToParts(value);
-
-				for (const classname of classnames) {
-					const parsed = parseClassName(config, classname);
-					if (parsed.isExternal || !ARBITRARY_VALUE_REGEX.test(parsed.baseClass)) {
-						continue;
-					}
-					report({
-						messageId: "arbitraryValue",
-						data: {
-							classname,
-						},
-					});
-				}
-			},
-		});
+		for (const classname of classnames) {
+			const parsed = parseClassName(config, classname);
+			if (parsed.isExternal || !ARBITRARY_VALUE_REGEX.test(parsed.baseClass)) {
+				continue;
+			}
+			report({
+				messageId: "arbitraryValue",
+				data: {
+					classname,
+				},
+			});
+		}
 	},
 });
 
