@@ -15,7 +15,7 @@ pnpm add --save-dev @yorganci/eslint-plugin-tailwindcss
 bun add --dev @yorganci/eslint-plugin-tailwindcss
 ```
 
-## Configuration
+## Quick Start
 
 The plugin provides two configurations `tailwindcss.configs.recommended` and `tailwindcss.configs.strict`. Recommended rules only add warnings are less opinionated, while strict config enables most of the rules.
 
@@ -67,15 +67,15 @@ export default defineConfig([
 		settings: {
 			tailwindcss: {
 				// Path to CSS file with `@import "tailwindcss";` directive.
-				stylesheet: z.string(),
+				stylesheet: "path/to/tailwind/stylesheet.css",
 				// Regex to match attribute names in JSX
-				classRegex: z.string().default("^class(?:Name)?$"),
+				attributeRegex: "^class(?:Name)?$",
 				// List of class functions to check for class names.
-				classFunctions: z.string().array().default(["classnames", "clsx", "ctl", "twMerge", "twJoin", "cn"]),
+				classFunctions: ["cc", "clb", "clsx", "cn", "cnb", "ctl", "cva", "cx", "dcnb", "objstr", "tv", "twJoin", "twMerge"],
 				// List of tags to check for class names, tw`block text-red`
-				tags: z.string().array().default(["tw"]),
+				tags: ["tw"],
 				// Regex to match variable names, `const styles = "..."`
-				identifierRegex: z.string().default("^.*styles$"),
+				variableRegex: "^.*(styles|classNames)$",
 			}
 		}
 	}
@@ -93,10 +93,11 @@ export default defineConfig([
 
 ## Credits
 
-- Forked from [@francoismassart](https://github.com/francoismassart) original author of [`eslint-plugin-tailwindcss`](https://github.com/francoismassart/eslint-plugin-tailwindcss) package
-- [@dcastil](https://github.com/dcastil) author of [`tailwind-merge`](https://github.com/dcastil/tailwind-merge) package for resolving and finding conflicts
-- [`prettier-plugin-tailwindcss` contributors](https://github.com/tailwindlabs/prettier-plugin-tailwindcss/graphs/contributors) for classname order
-- [@atahanyorganci](https://github.com/atahanyorganci) for updating package to Tailwind CSS v4
+- Forked from [@francoismassart](https://github.com/francoismassart) original author of [`eslint-plugin-tailwindcss`](https://github.com/francoismassart/eslint-plugin-tailwindcss) package.
+- [@dcastil](https://github.com/dcastil) author of [`tailwind-merge`](https://github.com/dcastil/tailwind-merge) package for resolving and finding conflicts.
+- [`prettier-plugin-tailwindcss` contributors](https://github.com/tailwindlabs/prettier-plugin-tailwindcss/graphs/contributors) for classname order.
+- [@schoreo](https://github.com/schoero) author of [`eslint-plugin-better-tailwindcss`](https://github.com/schoero/eslint-plugin-better-tailwindcss) for reference `synckit` and settings schema.
+- [@atahanyorganci](https://github.com/atahanyorganci) for updating package to Tailwind CSS v4.
 
 ## License
 
