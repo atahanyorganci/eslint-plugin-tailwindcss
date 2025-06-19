@@ -1,4 +1,4 @@
-import type { ParsedClassName } from "../tailwind-merge.js";
+import type { TailwindClass } from "../tailwind-merge.js";
 import { getTailwindPrefix } from "../prettier/index.js";
 import { extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
 import { createVisitor, defineRule, getSettings, joinClassValueParts, splitClassValueToParts } from "../util.js";
@@ -60,12 +60,12 @@ function matchNegativeArbitraryValue(classname: string) {
 	return { baseClass, value };
 }
 
-function tryReplaceNegativeArbitraryValue(classname: string, { baseClassName }: ParsedClassName) {
-	const match = matchNegativeArbitraryValue(baseClassName);
+function tryReplaceNegativeArbitraryValue(classname: string, { args }: TailwindClass) {
+	const match = matchNegativeArbitraryValue(args);
 	if (!match || !NEGATIVE_UTILITIES.has(match.baseClass)) {
 		return;
 	}
-	return classname.replace(baseClassName, `-${match.baseClass}-[${match.value}]`);
+	return classname.replace(args, `-${match.baseClass}-[${match.value}]`);
 }
 
 const noUnnecessaryNegativeArbitraryValue = defineRule({
@@ -93,7 +93,11 @@ const noUnnecessaryNegativeArbitraryValue = defineRule({
 
 				for (let i = 0; i < classnames.length; i++) {
 					const classname = classnames[i]!;
-					const replacement = tryReplaceNegativeArbitraryValue(classname, parseClassName(config, classname));
+					const parsed = parseClassName(config, classname);
+					if (parsed.isExternal) {
+						continue;
+					}
+					const replacement = tryReplaceNegativeArbitraryValue(classname, parsed);
 					if (!replacement) {
 						continue;
 					}

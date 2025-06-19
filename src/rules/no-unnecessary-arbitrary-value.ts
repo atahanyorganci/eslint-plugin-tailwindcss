@@ -1,4 +1,4 @@
-import type { ParsedClassName } from "../tailwind-merge.js";
+import type { TailwindClass } from "../tailwind-merge.js";
 import { getTailwindPrefix } from "../prettier/index.js";
 import { extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
 import { createVisitor, defineRule, getSettings, joinClassValueParts, splitClassValueToParts } from "../util.js";
@@ -9,8 +9,8 @@ const REPLACERS = {
 	},
 } as Record<string, Record<string, string>>;
 
-function tryReplaceArbitraryValue(classname: string, { baseClassName }: ParsedClassName) {
-	const match = baseClassName.match(/(?<baseClass>\w+)-\[(?<value>.+)\]/);
+function tryReplaceArbitraryValue(classname: string, { args }: TailwindClass) {
+	const match = args.match(/(?<baseClass>\w+)-\[(?<value>.+)\]/);
 	if (!match || !match.groups || !match.groups["baseClass"] || !match.groups["value"]) {
 		return;
 	}
@@ -52,7 +52,11 @@ const noUnnecessaryArbitraryValue = defineRule({
 
 				for (let i = 0; i < classnames.length; i++) {
 					const classname = classnames[i]!;
-					const replacement = tryReplaceArbitraryValue(classname, parseClassName(config, classname));
+					const parsed = parseClassName(config, classname);
+					if (parsed.isExternal) {
+						continue;
+					}
+					const replacement = tryReplaceArbitraryValue(classname, parsed);
 					if (!replacement) {
 						continue;
 					}

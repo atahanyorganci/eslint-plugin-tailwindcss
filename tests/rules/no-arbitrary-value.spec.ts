@@ -109,7 +109,7 @@ describe("`no-arbitrary-value`", () => {
 	});
 
 	it("should handle arbitrary values with important modifier", async () => {
-		const code = `<div className="!bg-[red] !text-[18px]">Content</div>`;
+		const code = `<div className="bg-[red]! text-[18px]!">Content</div>`;
 		const results = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(results[0].messages).toHaveLength(2);
 	});

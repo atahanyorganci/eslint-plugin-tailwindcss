@@ -1,11 +1,13 @@
+import type { TailwindClass } from "../tailwind-merge.js";
 import { getTailwindPrefix } from "../prettier/index.js";
 import {
-	createClassGroupUtils,
 	createSortModifiers,
 	extendDefaultConfig,
+	getConflictingClassGroupIds,
 	IMPORTANT_MODIFIER,
 	MODIFIER_SEPARATOR,
 	parseClassName,
+
 } from "../tailwind-merge.js";
 import { createVisitor, defineRule, getSettings, splitClassValueToParts } from "../util.js";
 
@@ -25,12 +27,22 @@ const noContradictingClassnames = defineRule({
 		const { stylesheet } = getSettings(context);
 		const prefix = getTailwindPrefix({ stylesheet });
 		const config = extendDefaultConfig({ prefix });
-
-		const {
-			getClassGroupId,
-			getConflictingClassGroupIds,
-		} = createClassGroupUtils();
 		const sortModifiers = createSortModifiers();
+
+		function canonicalize({ modifiers, classGroup, hasImportantModifier, postfixModifier }: TailwindClass) {
+			const parts = [];
+			if (modifiers.length > 0) {
+				parts.push(sortModifiers(modifiers).join(MODIFIER_SEPARATOR));
+			}
+			parts.push(classGroup);
+			if (hasImportantModifier) {
+				parts.push(IMPORTANT_MODIFIER);
+			}
+			if (postfixModifier) {
+				parts.push(postfixModifier);
+			}
+			return parts.join(MODIFIER_SEPARATOR);
+		}
 
 		return createVisitor({
 			context,
@@ -39,39 +51,11 @@ const noContradictingClassnames = defineRule({
 				const conflictingIds = new Map<string, string>();
 
 				for (const classname of classnames) {
-					const {
-						baseClassName,
-						hasImportantModifier,
-						maybePostfixModifierPosition,
-						modifiers,
-					} = parseClassName(config, classname);
-
-					let hasPostfixModifier = !!maybePostfixModifierPosition;
-					const classWithoutModifier = hasPostfixModifier
-						? baseClassName.substring(0, maybePostfixModifierPosition)
-						: baseClassName;
-					let classGroupId = getClassGroupId(classWithoutModifier);
-
-					if (!classGroupId) {
-						if (!hasPostfixModifier) {
-							// Not a Tailwind class
-							continue;
-						}
-						classGroupId = getClassGroupId(baseClassName);
-						if (!classGroupId) {
-							// Not a Tailwind class
-							continue;
-						}
-						hasPostfixModifier = false;
+					const parsed = parseClassName(config, classname);
+					if (parsed.isExternal) {
+						continue;
 					}
-					const variantModifier = sortModifiers(modifiers).join(MODIFIER_SEPARATOR);
-
-					const modifierId = hasImportantModifier
-						? variantModifier + IMPORTANT_MODIFIER
-						: variantModifier;
-					const hasModifiers = modifiers.length > 0;
-					const qualifiedClass = hasModifiers ? `${modifierId}${MODIFIER_SEPARATOR}${classGroupId}` : classGroupId;
-
+					const qualifiedClass = canonicalize(parsed);
 					const maybeConflictingClass = conflictingIds.get(qualifiedClass);
 					if (maybeConflictingClass) {
 						report({
@@ -83,9 +67,12 @@ const noContradictingClassnames = defineRule({
 					}
 					else {
 						conflictingIds.set(qualifiedClass, classname);
-						const newConflictingIds = getConflictingClassGroupIds(classGroupId, hasImportantModifier);
-						for (const conflictingId of newConflictingIds) {
-							const qualifiedClass = hasModifiers ? `${modifierId}${MODIFIER_SEPARATOR}${conflictingId}` : conflictingId;
+						const conflictingGroups = getConflictingClassGroupIds(config, parsed.classGroup, parsed.hasImportantModifier);
+						for (const conflictingGroup of conflictingGroups) {
+							const qualifiedClass = canonicalize({
+								...parsed,
+								classGroup: conflictingGroup,
+							});
 							conflictingIds.set(qualifiedClass, classname);
 						}
 					}
