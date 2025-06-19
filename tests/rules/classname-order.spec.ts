@@ -54,7 +54,7 @@ function loadEslintTw() {
 		},
 		settings: {
 			tailwindcss: {
-				classRegex: "^tw$",
+				attributeRegex: "^tw$",
 			},
 		},
 	});
@@ -454,7 +454,7 @@ describe("`classname-order` (legacy conversions)", () => {
 	});
 
 	it("should report an error for array elements", async () => {
-		const code = `<div className={classnames(['invalid lg:w-4 sm:w-6', ['w-12 flex']])} />`;
+		const code = `<div className={clsx(['invalid lg:w-4 sm:w-6', ['w-12 flex']])} />`;
 		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
 		expect(result.messages).toHaveLength(2);
 		expect(result.messages[0].fix?.text).toMatch(/invalid\s+sm:w-6\s+lg:w-4/);
@@ -463,7 +463,7 @@ describe("`classname-order` (legacy conversions)", () => {
 
 	it("should report an error for object keys", async () => {
 		const code = `
-      <div className={classnames({
+      <div className={clsx({
         invalid,
         flex: myFlag,
         'lg:w-4 sm:w-6': resize

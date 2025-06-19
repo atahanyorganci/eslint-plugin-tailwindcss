@@ -253,15 +253,15 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 	}
 
 	const {
-		classRegex: classRegexString,
+		attributeRegex: attributeRegexString,
 		tags: tagsArray,
 		classFunctions: classFunctionsArray,
-		identifierRegex: identifierRegexString,
+		variableRegex: variableRegexString,
 	} = getSettings(context);
-	const classRegex = new RegExp(classRegexString);
+	const attributeRegex = new RegExp(attributeRegexString);
 	const tags = new Set(tagsArray);
 	const classFunctions = new Set(classFunctionsArray);
-	const identifierRegex = new RegExp(identifierRegexString, "i");
+	const variableRegex = new RegExp(variableRegexString, "i");
 
 	return {
 		JSXAttribute(node: JSXAttribute) {
@@ -272,7 +272,7 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 			else {
 				nodeName = node.name.name.name;
 			}
-			if (!classRegex.test(nodeName) || !node.value) {
+			if (!attributeRegex.test(nodeName) || !node.value) {
 				return;
 			}
 
@@ -308,7 +308,7 @@ export function createVisitor<TMessage extends string, TOptions extends Options<
 			}
 		},
 		VariableDeclarator(node: VariableDeclarator) {
-			if (node.id.type !== "Identifier" || !identifierRegex.test(node.id.name) || !node.init) {
+			if (node.id.type !== "Identifier" || !variableRegex.test(node.id.name) || !node.init) {
 				return;
 			}
 			visitExpression(node.init);
@@ -327,11 +327,11 @@ export const SettingsSchema = z.object({
 	/**
 	 * Regex to match attribute names in JSX
 	 */
-	classRegex: z.string().default("^class(?:Name)?$"),
+	attributeRegex: z.string().default("^class(?:Name)?$"),
 	/**
 	 * List of class functions to check for class names.
 	 */
-	classFunctions: z.string().array().default(["classnames", "clsx", "ctl", "twMerge", "twJoin", "cn", "cva"]),
+	classFunctions: z.string().array().default(["cc", "clb", "clsx", "cn", "cnb", "ctl", "cva", "cx", "dcnb", "objstr", "tv", "twJoin", "twMerge"]),
 	/**
 	 * List of tags to check for class names, tw`block text-red`
 	 */
@@ -339,7 +339,7 @@ export const SettingsSchema = z.object({
 	/**
 	 * Regex to match variable names, `const styles = "..."`
 	 */
-	identifierRegex: z.string().default("^.*styles$"),
+	variableRegex: z.string().default("^.*(styles|classNames)$"),
 }).strict();
 export type Settings = z.infer<typeof SettingsSchema>;
 
