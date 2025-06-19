@@ -1,13 +1,12 @@
 import type { TailwindClass } from "../tailwind-merge.js";
 import { getTailwindPrefix } from "../prettier/index.js";
 import {
-	createSortModifiers,
 	extendDefaultConfig,
 	getConflictingClassGroupIds,
 	IMPORTANT_MODIFIER,
 	MODIFIER_SEPARATOR,
 	parseClassName,
-
+	sortModifiers,
 } from "../tailwind-merge.js";
 import { createVisitor, defineRule, getSettings, splitClassValueToParts } from "../util.js";
 
@@ -27,12 +26,11 @@ const noContradictingClassnames = defineRule({
 		const { stylesheet } = getSettings(context);
 		const prefix = getTailwindPrefix({ stylesheet });
 		const config = extendDefaultConfig({ prefix });
-		const sortModifiers = createSortModifiers();
 
 		function canonicalize({ modifiers, classGroup, hasImportantModifier, postfixModifier }: TailwindClass) {
 			const parts = [];
 			if (modifiers.length > 0) {
-				parts.push(sortModifiers(modifiers).join(MODIFIER_SEPARATOR));
+				parts.push(sortModifiers(config, modifiers).join(MODIFIER_SEPARATOR));
 			}
 			parts.push(classGroup);
 			if (hasImportantModifier) {

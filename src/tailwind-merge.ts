@@ -2873,42 +2873,32 @@ export function getDefaultConfig(): Config {
 	} as const satisfies Config;
 }
 
-function createSortModifiersFromConfig(config: Config) {
-	const orderSensitiveModifiers = Object.fromEntries(
-		config.orderSensitiveModifiers.map(modifier => [modifier, true]),
-	);
+export function sortModifiers(
+	{ orderSensitiveModifiers: orderSensitiveModifiersArray }: ResolvedConfig,
+	modifiers: string[],
+) {
+	if (modifiers.length <= 1) {
+		return modifiers;
+	}
 
-	const sortModifiers = (modifiers: string[]) => {
-		if (modifiers.length <= 1) {
-			return modifiers;
+	const orderSensitiveModifiers = new Set(orderSensitiveModifiersArray);
+	const sortedModifiers: string[] = [];
+	let unsortedModifiers: string[] = [];
+
+	modifiers.forEach((modifier) => {
+		const isPositionSensitive = modifier[0] === "[" || orderSensitiveModifiers.has(modifier);
+
+		if (isPositionSensitive) {
+			sortedModifiers.push(...unsortedModifiers.sort(), modifier);
+			unsortedModifiers = [];
 		}
+		else {
+			unsortedModifiers.push(modifier);
+		}
+	});
+	sortedModifiers.push(...unsortedModifiers.sort());
 
-		const sortedModifiers: string[] = [];
-		let unsortedModifiers: string[] = [];
-
-		modifiers.forEach((modifier) => {
-			const isPositionSensitive = modifier[0] === "[" || orderSensitiveModifiers[modifier];
-
-			if (isPositionSensitive) {
-				sortedModifiers.push(...unsortedModifiers.sort(), modifier);
-				unsortedModifiers = [];
-			}
-			else {
-				unsortedModifiers.push(modifier);
-			}
-		});
-
-		sortedModifiers.push(...unsortedModifiers.sort());
-
-		return sortedModifiers;
-	};
-
-	return sortModifiers;
-}
-
-export function createSortModifiers() {
-	const config = getDefaultConfig();
-	return createSortModifiersFromConfig(config);
+	return sortedModifiers;
 }
 
 /**
