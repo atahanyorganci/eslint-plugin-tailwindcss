@@ -41,6 +41,9 @@ export interface VariantEntry {
  * @see {@link https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/design-system.ts#L21 | original source}
  */
 export interface DesignSystem {
+	theme: {
+		prefix: string | null;
+	};
 	/**
 	 * Whether to mark utility declarations as `!important`
 	 */

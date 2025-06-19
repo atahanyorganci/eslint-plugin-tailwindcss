@@ -1,6 +1,7 @@
 import type { ParsedClassName } from "../tailwind-merge.js";
-import { parseClassName } from "../tailwind-merge.js";
-import { createVisitor, defineRule, joinClassValueParts, splitClassValueToParts } from "../util.js";
+import { getTailwindPrefix } from "../prettier/index.js";
+import { extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
+import { createVisitor, defineRule, getSettings, joinClassValueParts, splitClassValueToParts } from "../util.js";
 
 const NEGATIVE_UTILITIES = new Set([
 	/**
@@ -81,6 +82,10 @@ const noUnnecessaryNegativeArbitraryValue = defineRule({
 		fixable: "code",
 	},
 	create(context) {
+		const { stylesheet } = getSettings(context);
+		const prefix = getTailwindPrefix({ stylesheet });
+		const config = extendDefaultConfig({ prefix });
+
 		return createVisitor({
 			context,
 			visitClassValue: ({ value, report }) => {
@@ -88,7 +93,7 @@ const noUnnecessaryNegativeArbitraryValue = defineRule({
 
 				for (let i = 0; i < classnames.length; i++) {
 					const classname = classnames[i]!;
-					const replacement = tryReplaceNegativeArbitraryValue(classname, parseClassName(classname));
+					const replacement = tryReplaceNegativeArbitraryValue(classname, parseClassName(config, classname));
 					if (!replacement) {
 						continue;
 					}

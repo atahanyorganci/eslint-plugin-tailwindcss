@@ -1,5 +1,6 @@
-import { createClassGroupUtils, parseClassName } from "../tailwind-merge.js";
-import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
+import { getTailwindPrefix } from "../prettier/index.js";
+import { createClassGroupUtils, extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
+import { createVisitor, defineRule, getSettings, splitClassValueToParts } from "../util.js";
 
 const noCustomClassname = defineRule({
 	meta: {
@@ -14,6 +15,10 @@ const noCustomClassname = defineRule({
 		},
 	},
 	create(context) {
+		const { stylesheet } = getSettings(context);
+		const prefix = getTailwindPrefix({ stylesheet });
+		const config = extendDefaultConfig({ prefix });
+
 		const { getClassGroupId } = createClassGroupUtils();
 
 		return createVisitor({
@@ -22,7 +27,17 @@ const noCustomClassname = defineRule({
 				const { classnames } = splitClassValueToParts(value);
 
 				for (const classname of classnames) {
-					const { baseClassName, maybePostfixModifierPosition } = parseClassName(classname);
+					const { isExternal, baseClassName, maybePostfixModifierPosition } = parseClassName(config, classname);
+
+					if (isExternal) {
+						report({
+							messageId: "customClassname",
+							data: {
+								classname,
+							},
+						});
+						continue;
+					}
 
 					const hasPostfixModifier = !!maybePostfixModifierPosition;
 					const classWithoutModifier = hasPostfixModifier

@@ -1,5 +1,6 @@
-import { parseClassName } from "../tailwind-merge.js";
-import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
+import { getTailwindPrefix } from "../prettier/index.js";
+import { extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
+import { createVisitor, defineRule, getSettings, splitClassValueToParts } from "../util.js";
 
 const COMBINABLE = /^-?(?<baseClass>w|h|mx|my|px|py|mt|ml|mr|mb)-(?<value>.+)$/;
 
@@ -35,6 +36,10 @@ const shorthand = defineRule({
 		fixable: "code",
 	},
 	create(context) {
+		const { stylesheet } = getSettings(context);
+		const prefix = getTailwindPrefix({ stylesheet });
+		const config = extendDefaultConfig({ prefix });
+
 		return createVisitor({
 			context,
 			visitClassValue: ({ value, report }) => {
@@ -42,7 +47,7 @@ const shorthand = defineRule({
 				const classIndexes = new Map(classnames.map((classname, i) => [classname, i]));
 
 				for (const [classname, index] of classIndexes.entries()) {
-					const { baseClassName } = parseClassName(classname);
+					const { baseClassName } = parseClassName(config, classname);
 					// Find the base class that can be combined with another class
 					const match = matchCombinableClass(baseClassName);
 					if (!match) {

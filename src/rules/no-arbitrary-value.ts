@@ -1,5 +1,6 @@
-import { ARBITRARY_VALUE_REGEX, parseClassName } from "../tailwind-merge.js";
-import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
+import { getTailwindPrefix } from "../prettier/index.js";
+import { ARBITRARY_VALUE_REGEX, extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
+import { createVisitor, defineRule, getSettings, splitClassValueToParts } from "../util.js";
 
 const noArbitraryValue = defineRule({
 	meta: {
@@ -14,13 +15,17 @@ const noArbitraryValue = defineRule({
 		},
 	},
 	create(context) {
+		const { stylesheet } = getSettings(context);
+		const prefix = getTailwindPrefix({ stylesheet });
+		const config = extendDefaultConfig({ prefix });
+
 		return createVisitor({
 			context,
 			visitClassValue: ({ value, report }) => {
 				const { classnames } = splitClassValueToParts(value);
 
 				for (const classname of classnames) {
-					const { baseClassName } = parseClassName(classname);
+					const { baseClassName } = parseClassName(config, classname);
 					if (!ARBITRARY_VALUE_REGEX.test(baseClassName)) {
 						continue;
 					}

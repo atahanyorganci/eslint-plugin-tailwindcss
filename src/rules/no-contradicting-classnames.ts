@@ -1,11 +1,13 @@
+import { getTailwindPrefix } from "../prettier/index.js";
 import {
 	createClassGroupUtils,
 	createSortModifiers,
+	extendDefaultConfig,
 	IMPORTANT_MODIFIER,
 	MODIFIER_SEPARATOR,
 	parseClassName,
 } from "../tailwind-merge.js";
-import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
+import { createVisitor, defineRule, getSettings, splitClassValueToParts } from "../util.js";
 
 const noContradictingClassnames = defineRule({
 	meta: {
@@ -20,6 +22,10 @@ const noContradictingClassnames = defineRule({
 		},
 	},
 	create(context) {
+		const { stylesheet } = getSettings(context);
+		const prefix = getTailwindPrefix({ stylesheet });
+		const config = extendDefaultConfig({ prefix });
+
 		const {
 			getClassGroupId,
 			getConflictingClassGroupIds,
@@ -38,7 +44,7 @@ const noContradictingClassnames = defineRule({
 						hasImportantModifier,
 						maybePostfixModifierPosition,
 						modifiers,
-					} = parseClassName(classname);
+					} = parseClassName(config, classname);
 
 					let hasPostfixModifier = !!maybePostfixModifierPosition;
 					const classWithoutModifier = hasPostfixModifier

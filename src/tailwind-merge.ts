@@ -50,17 +50,13 @@ export const MODIFIER_SEPARATOR_LENGTH = MODIFIER_SEPARATOR.length;
 
 export const ARBITRARY_VALUE_REGEX = /\[(?:(\w[\w-]*):)?(.+)\]/;
 
-export interface ParseClassNameOptions {
-	prefix: string;
-}
-
 /**
  * Parse class name into parts.
  *
  * Inspired by `splitAtTopLevelOnly` used in Tailwind CSS
  * @see https://github.com/tailwindlabs/tailwindcss/blob/v3.2.2/src/util/splitAtTopLevelOnly.js
  */
-export function parseClassName(className: string, { prefix }: Partial<ParseClassNameOptions> = {}): ParsedClassName {
+export function parseClassName({ prefix }: Pick<Config, "prefix">, className: string): ParsedClassName {
 	if (prefix) {
 		const fullPrefix = prefix + MODIFIER_SEPARATOR;
 		if (!className.startsWith(fullPrefix)) {
@@ -173,6 +169,12 @@ interface ClassValidatorObject {
 
 export interface Config {
 	/**
+	 * Prefix added to all class names.
+	 *
+	 * @example "tw:" // for `tw:bg-blue-500`
+	 */
+	prefix?: string;
+	/**
 	 * Theme scales used in classGroups.
 	 *
 	 * The keys are the same as in the Tailwind config but the values are sometimes defined more broadly.
@@ -215,6 +217,19 @@ export interface Config {
 	 */
 	orderSensitiveModifiers: string[];
 }
+
+/**
+ * Type of the configuration object that can be passed to `extendTailwindMerge`.
+ */
+export interface ConfigExtension {
+	prefix?: string;
+	override?: PartialPartial<Config>;
+	extend?: PartialPartial<Config>;
+}
+
+type PartialPartial<T> = {
+	[P in keyof T]?: T[P] extends any[] ? T[P] : Partial<T[P]>
+};
 
 const CLASS_PART_SEPARATOR = "-";
 
@@ -502,12 +517,15 @@ function fromTheme(key: string): ThemeGetter {
 	return themeGetter;
 }
 
-function getDefaultConfig() {
+export function createConfig(config: Config): Config {
+	return config;
+}
+
+export function getDefaultConfig(): Config {
 	/**
 	 * Theme getters for theme variable namespaces
 	 * @see https://tailwindcss.com/docs/theme#theme-variable-namespaces
 	 */
-	/***/
 
 	const themeColor = fromTheme("color");
 	const themeFont = fromTheme("font");
@@ -535,10 +553,7 @@ function getDefaultConfig() {
 	 * We use functions that create a new array every time they're called instead of static arrays.
 	 * This ensures that users who modify any scale by mutating the array (e.g. with `array.push(element)`) don't accidentally mutate arrays in other parts of the config.
 	 */
-	/***/
-
-	const scaleBreak = () =>
-		["auto", "avoid", "all", "avoid-page", "page", "left", "right", "column"] as const;
+	const scaleBreak = () => ["auto", "avoid", "all", "avoid-page", "page", "left", "right", "column"] as const;
 	const scalePosition = () =>
 		[
 			"center",
@@ -2876,4 +2891,67 @@ function createSortModifiersFromConfig(config: Config) {
 export function createSortModifiers() {
 	const config = getDefaultConfig();
 	return createSortModifiersFromConfig(config);
+}
+
+/**
+ * @param baseConfig Config where other config will be merged into. This object will be mutated.
+ * @param configExtension Partial config to merge into the `baseConfig`.
+ */
+export function extendDefaultConfig({
+	prefix,
+	extend = {},
+	override = {},
+}: ConfigExtension) {
+	const baseConfig = getDefaultConfig();
+	overrideProperty(baseConfig, "prefix", prefix);
+
+	overrideConfigProperties(baseConfig.theme, override.theme);
+	overrideConfigProperties(baseConfig.classGroups, override.classGroups);
+	overrideConfigProperties(baseConfig.conflictingClassGroups, override.conflictingClassGroups);
+	overrideConfigProperties(
+		baseConfig.conflictingClassGroupModifiers,
+		override.conflictingClassGroupModifiers,
+	);
+	overrideProperty(baseConfig, "orderSensitiveModifiers", override.orderSensitiveModifiers);
+
+	mergeConfigProperties(baseConfig.theme, extend.theme);
+	mergeConfigProperties(baseConfig.classGroups, extend.classGroups);
+	mergeConfigProperties(baseConfig.conflictingClassGroups, extend.conflictingClassGroups);
+	mergeConfigProperties(
+		baseConfig.conflictingClassGroupModifiers,
+		extend.conflictingClassGroupModifiers,
+	);
+	mergeArrayProperties(baseConfig, extend, "orderSensitiveModifiers");
+
+	return baseConfig;
+}
+
+function overrideProperty<T extends object, K extends keyof T>(baseObject: T,	overrideKey: K,	overrideValue: T[K] | undefined) {
+	if (overrideValue !== undefined) {
+		baseObject[overrideKey] = overrideValue;
+	}
+}
+
+function overrideConfigProperties(baseObject: Partial<Record<string, readonly unknown[]>>,	overrideObject: Partial<Record<string, readonly unknown[]>> | undefined) {
+	if (overrideObject) {
+		for (const key in overrideObject) {
+			overrideProperty(baseObject, key, overrideObject[key]);
+		}
+	}
+}
+
+function mergeConfigProperties(baseObject: Partial<Record<string, readonly unknown[]>>,	mergeObject: Partial<Record<string, readonly unknown[]>> | undefined) {
+	if (mergeObject) {
+		for (const key in mergeObject) {
+			mergeArrayProperties(baseObject, mergeObject, key);
+		}
+	}
+}
+
+function mergeArrayProperties<Key extends string>(baseObject: Partial<Record<NoInfer<Key>, readonly unknown[]>>,	mergeObject: Partial<Record<NoInfer<Key>, readonly unknown[]>>,	key: Key) {
+	const mergeValue = mergeObject[key];
+
+	if (mergeValue !== undefined) {
+		baseObject[key] = baseObject[key] ? baseObject[key].concat(mergeValue) : mergeValue;
+	}
 }

@@ -1,6 +1,7 @@
 import type { ParsedClassName } from "../tailwind-merge.js";
-import { parseClassName } from "../tailwind-merge.js";
-import { createVisitor, defineRule, joinClassValueParts, splitClassValueToParts } from "../util.js";
+import { getTailwindPrefix } from "../prettier/index.js";
+import { extendDefaultConfig, parseClassName } from "../tailwind-merge.js";
+import { createVisitor, defineRule, getSettings, joinClassValueParts, splitClassValueToParts } from "../util.js";
 
 const REPLACERS = {
 	w: {
@@ -40,6 +41,10 @@ const noUnnecessaryArbitraryValue = defineRule({
 		fixable: "code",
 	},
 	create(context) {
+		const { stylesheet } = getSettings(context);
+		const prefix = getTailwindPrefix({ stylesheet });
+		const config = extendDefaultConfig({ prefix });
+
 		return createVisitor({
 			context,
 			visitClassValue: ({ value, report }) => {
@@ -47,7 +52,7 @@ const noUnnecessaryArbitraryValue = defineRule({
 
 				for (let i = 0; i < classnames.length; i++) {
 					const classname = classnames[i]!;
-					const replacement = tryReplaceArbitraryValue(classname, parseClassName(classname));
+					const replacement = tryReplaceArbitraryValue(classname, parseClassName(config, classname));
 					if (!replacement) {
 						continue;
 					}
