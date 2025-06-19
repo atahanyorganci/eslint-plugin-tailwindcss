@@ -4095,3 +4095,953 @@ describe("`parseClassName` - Flexbox & Grid", () => {
 		`);
 	});
 });
+
+describe("`parseClassName` - Spacing", () => {
+	let config: ResolvedConfig;
+
+	beforeAll(() => {
+		config = extendDefaultConfig({});
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/padding
+	 */
+	it("should parse padding classes", () => {
+		expect(parseClassName(config, "p-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "p-0",
+			  "classGroup": "p",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "p-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "p-px",
+			  "classGroup": "p",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "p-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "p-[10px]",
+			  "classGroup": "p",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "px-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "px-0",
+			  "classGroup": "px",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "px-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "px-px",
+			  "classGroup": "px",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "px-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "px-[10px]",
+			  "classGroup": "px",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "py-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "py-0",
+			  "classGroup": "py",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "py-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "py-px",
+			  "classGroup": "py",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "py-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "py-[10px]",
+			  "classGroup": "py",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ps-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "ps-0",
+			  "classGroup": "ps",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ps-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "ps-px",
+			  "classGroup": "ps",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ps-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "ps-[10px]",
+			  "classGroup": "ps",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pe-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "pe-0",
+			  "classGroup": "pe",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pe-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "pe-px",
+			  "classGroup": "pe",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pe-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "pe-[10px]",
+			  "classGroup": "pe",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pt-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "pt-0",
+			  "classGroup": "pt",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pt-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "pt-px",
+			  "classGroup": "pt",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pt-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "pt-[10px]",
+			  "classGroup": "pt",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pr-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "pr-0",
+			  "classGroup": "pr",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pr-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "pr-px",
+			  "classGroup": "pr",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pr-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "pr-[10px]",
+			  "classGroup": "pr",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pb-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "pb-0",
+			  "classGroup": "pb",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pb-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "pb-px",
+			  "classGroup": "pb",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pb-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "pb-[10px]",
+			  "classGroup": "pb",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pl-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "pl-0",
+			  "classGroup": "pl",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pl-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "pl-px",
+			  "classGroup": "pl",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "pl-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "pl-[10px]",
+			  "classGroup": "pl",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+
+	/**
+	 * @see https://tailwindcss.com/docs/margin
+	 */
+	it("should parse margin classes", () => {
+		expect(parseClassName(config, "m-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "m-0",
+			  "classGroup": "m",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-m-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "m-0",
+			  "classGroup": "m",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "m-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "m-auto",
+			  "classGroup": "m",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "m-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "m-px",
+			  "classGroup": "m",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-m-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "m-px",
+			  "classGroup": "m",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "m-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "m-[10px]",
+			  "classGroup": "m",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mx-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "mx-0",
+			  "classGroup": "mx",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-mx-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "mx-0",
+			  "classGroup": "mx",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mx-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "mx-auto",
+			  "classGroup": "mx",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mx-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "mx-px",
+			  "classGroup": "mx",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-mx-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "mx-px",
+			  "classGroup": "mx",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mx-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "mx-[10px]",
+			  "classGroup": "mx",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "my-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "my-0",
+			  "classGroup": "my",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-my-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "my-0",
+			  "classGroup": "my",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "my-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "my-auto",
+			  "classGroup": "my",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "my-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "my-px",
+			  "classGroup": "my",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-my-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "my-px",
+			  "classGroup": "my",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "my-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "my-[10px]",
+			  "classGroup": "my",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ms-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "ms-0",
+			  "classGroup": "ms",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-ms-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "ms-0",
+			  "classGroup": "ms",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ms-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "ms-auto",
+			  "classGroup": "ms",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ms-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "ms-px",
+			  "classGroup": "ms",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-ms-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "ms-px",
+			  "classGroup": "ms",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ms-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "ms-[10px]",
+			  "classGroup": "ms",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "me-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "me-0",
+			  "classGroup": "me",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-me-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "me-0",
+			  "classGroup": "me",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "me-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "me-auto",
+			  "classGroup": "me",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "me-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "me-px",
+			  "classGroup": "me",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-me-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "me-px",
+			  "classGroup": "me",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "me-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "me-[10px]",
+			  "classGroup": "me",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mt-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "mt-0",
+			  "classGroup": "mt",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-mt-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "mt-0",
+			  "classGroup": "mt",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mt-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "mt-auto",
+			  "classGroup": "mt",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mt-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "mt-px",
+			  "classGroup": "mt",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-mt-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "mt-px",
+			  "classGroup": "mt",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mt-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "mt-[10px]",
+			  "classGroup": "mt",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mr-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "mr-0",
+			  "classGroup": "mr",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-mr-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "mr-0",
+			  "classGroup": "mr",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mr-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "mr-auto",
+			  "classGroup": "mr",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mr-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "mr-px",
+			  "classGroup": "mr",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-mr-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "mr-px",
+			  "classGroup": "mr",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mr-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "mr-[10px]",
+			  "classGroup": "mr",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mb-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "mb-0",
+			  "classGroup": "mb",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-mb-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "mb-0",
+			  "classGroup": "mb",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mb-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "mb-auto",
+			  "classGroup": "mb",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mb-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "mb-px",
+			  "classGroup": "mb",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-mb-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "mb-px",
+			  "classGroup": "mb",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "mb-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "mb-[10px]",
+			  "classGroup": "mb",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ml-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "ml-0",
+			  "classGroup": "ml",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-ml-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "ml-0",
+			  "classGroup": "ml",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ml-auto")).toMatchInlineSnapshot(`
+			{
+			  "args": "ml-auto",
+			  "classGroup": "ml",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ml-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "ml-px",
+			  "classGroup": "ml",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-ml-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "ml-px",
+			  "classGroup": "ml",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "ml-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "ml-[10px]",
+			  "classGroup": "ml",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "space-x-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-x-0",
+			  "classGroup": "space-x",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-space-x-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-x-0",
+			  "classGroup": "space-x",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "space-x-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-x-px",
+			  "classGroup": "space-x",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-space-x-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-x-px",
+			  "classGroup": "space-x",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "space-x-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-x-[10px]",
+			  "classGroup": "space-x",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "space-y-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-y-0",
+			  "classGroup": "space-y",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-space-y-0")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-y-0",
+			  "classGroup": "space-y",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "space-y-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-y-px",
+			  "classGroup": "space-y",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "-space-y-px")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-y-px",
+			  "classGroup": "space-y",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "space-y-[10px]")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-y-[10px]",
+			  "classGroup": "space-y",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "space-x-reverse")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-x-reverse",
+			  "classGroup": "space-x-reverse",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+		expect(parseClassName(config, "space-y-reverse")).toMatchInlineSnapshot(`
+			{
+			  "args": "space-y-reverse",
+			  "classGroup": "space-y-reverse",
+			  "hasImportantModifier": false,
+			  "isExternal": false,
+			  "modifiers": [],
+			  "postfixModifier": undefined,
+			}
+		`);
+	});
+});
