@@ -39,9 +39,9 @@ export interface TailwindClass {
 	/**
 	 * Arguments of the class.
 	 *
-	 * @example 'gray-100' // for `hover:dark:bg-gray-100`
+	 * @example "bg-gray-100" // for `hover:dark:bg-gray-100`
 	 */
-	args: string;
+	baseClass: string;
 	/**
 	 * Postfix modifier of the class, if any. Mostly used for opacity.
 	 *
@@ -128,22 +128,19 @@ export function parseClassName(config: ResolvedConfig, className: string): Parse
 		classGroup = parseClassIntoGroupAndArg(config, baseClassName);
 		postfixModifier = undefined;
 	}
-	if (!classGroup?.group) {
+	if (!classGroup) {
 		return {
 			isExternal: true,
 			className,
 		};
-	}
-	if (!classGroup.arg) {
-		throw new Error("Class group must have an argument");
 	}
 
 	return {
 		isExternal: false,
 		modifiers,
 		hasImportantModifier,
-		classGroup: classGroup.group,
-		args: classGroup.arg,
+		classGroup,
+		baseClass: baseClassNameStripped,
 		postfixModifier,
 	};
 }
@@ -258,22 +255,13 @@ type PartialPartial<T> = {
 
 const CLASS_PART_SEPARATOR = "-";
 
-export function parseClassIntoGroupAndArg({ classMap }: ResolvedConfig, className: string): BBB | undefined {
+export function parseClassIntoGroupAndArg({ classMap }: ResolvedConfig, className: string): string | undefined {
 	const classParts = className.split(CLASS_PART_SEPARATOR);
-
 	// Classes like `-inset-1` produce an empty string as first classPart. We assume that classes for negative values are used correctly and remove it from classParts.
 	if (classParts[0] === "" && classParts.length !== 1) {
 		classParts.shift();
 	}
-
-	const group = parseClassIntoGroupAndArgRecursive(classParts, classMap);
-	if (group && group.arg && group.group) {
-		return {
-			group: group.group,
-			arg: group.arg,
-		};
-	}
-	return getGroupIdForArbitraryProperty(className);
+	return parseClassIntoGroupAndArgRecursive(classParts, classMap) ?? getGroupIdForArbitraryProperty(className);
 }
 
 export function getConflictingClassGroupIds(
@@ -290,19 +278,12 @@ export function getConflictingClassGroupIds(
 	return conflicts;
 }
 
-interface BBB {
-	group: string;
-	arg: string;
-}
-
-function parseClassIntoGroupAndArgRecursive(classParts: string[], classPartObject: ClassPartObject): Partial<BBB> | undefined {
+function parseClassIntoGroupAndArgRecursive(classParts: string[], classPartObject: ClassPartObject): string | undefined {
 	if (classParts.length === 0) {
 		if (!classPartObject.classGroupId) {
 			return;
 		}
-		return {
-			group: classPartObject.classGroupId,
-		};
+		return classPartObject.classGroupId;
 	}
 
 	const currentClassPart = classParts[0]!;
@@ -312,10 +293,7 @@ function parseClassIntoGroupAndArgRecursive(classParts: string[], classPartObjec
 		: undefined;
 
 	if (classGroupFromNextClassPart) {
-		return {
-			...classGroupFromNextClassPart,
-			arg: classParts.join(CLASS_PART_SEPARATOR),
-		};
+		return classGroupFromNextClassPart;
 	}
 
 	if (classPartObject.validators.length === 0) {
@@ -327,15 +305,12 @@ function parseClassIntoGroupAndArgRecursive(classParts: string[], classPartObjec
 	if (!validator) {
 		return;
 	}
-	return {
-		group: validator.classGroupId,
-		arg: classRest,
-	};
+	return validator.classGroupId;
 }
 
 const arbitraryPropertyRegex = /^\[(.+)\]$/;
 
-function getGroupIdForArbitraryProperty(className: string): BBB | undefined {
+function getGroupIdForArbitraryProperty(className: string): string | undefined {
 	if (arbitraryPropertyRegex.test(className)) {
 		const arbitraryPropertyClassName = arbitraryPropertyRegex.exec(className)![1];
 		const property = arbitraryPropertyClassName?.substring(
@@ -345,10 +320,7 @@ function getGroupIdForArbitraryProperty(className: string): BBB | undefined {
 
 		if (property) {
 			// I use two dots here because one dot is used as prefix for class groups in plugins
-			return {
-				group: `arbitrary..${property}`,
-				arg: className,
-			};
+			return `arbitrary..${property}`;
 		}
 	}
 }

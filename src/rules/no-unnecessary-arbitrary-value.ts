@@ -9,17 +9,16 @@ const REPLACERS = {
 	},
 } as Record<string, Record<string, string>>;
 
-function tryReplaceArbitraryValue(classname: string, { args }: TailwindClass) {
-	const match = args.match(/(?<baseClass>\w+)-\[(?<value>.+)\]/);
+function tryReplaceArbitraryValue(classname: string, { baseClass }: TailwindClass) {
+	const match = baseClass.match(/(?<baseClass>\w+)-\[(?<value>.+)\]/);
 	if (!match || !match.groups || !match.groups["baseClass"] || !match.groups["value"]) {
 		return;
 	}
-	const { baseClass, value } = match.groups;
-	const replacers = REPLACERS[baseClass];
+	const replacers = REPLACERS[match.groups["baseClass"]];
 	if (!replacers) {
 		return;
 	}
-	const replacementValue = replacers[value];
+	const replacementValue = replacers[match.groups["value"]];
 	if (!replacementValue) {
 		return;
 	}

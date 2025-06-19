@@ -52,7 +52,7 @@ const shorthand = defineRule({
 						continue;
 					}
 					// Find the base class that can be combined with another class
-					const match = matchCombinableClass(parsed.args);
+					const match = matchCombinableClass(parsed.baseClass);
 					if (!match) {
 						continue;
 					}
@@ -62,15 +62,15 @@ const shorthand = defineRule({
 						continue;
 					}
 					// Replace the base class with the pair class
-					const basePairValue = parsed.args.replace(match.baseClass, pairBaseClass.pair);
-					const pair = classname.replace(parsed.args, basePairValue);
+					const basePairValue = parsed.baseClass.replace(match.baseClass, pairBaseClass.pair);
+					const pair = classname.replace(parsed.baseClass, basePairValue);
 					const pairIndex = classIndexes.get(pair);
 					if (typeof pairIndex !== "number") {
 						continue;
 					}
 					// Replace the base class with the shorthand class
-					const baseShorthandValue = parsed.args.replace(match.baseClass, pairBaseClass.shorthand);
-					const shorthand = classname.replace(parsed.args, baseShorthandValue);
+					const baseShorthandValue = parsed.baseClass.replace(match.baseClass, pairBaseClass.shorthand);
+					const shorthand = classname.replace(parsed.baseClass, baseShorthandValue);
 
 					// Reassemble the class value with the new classname
 					const parts = leading ? [leading] : [];

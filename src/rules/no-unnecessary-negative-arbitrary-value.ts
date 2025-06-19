@@ -60,12 +60,12 @@ function matchNegativeArbitraryValue(classname: string) {
 	return { baseClass, value };
 }
 
-function tryReplaceNegativeArbitraryValue(classname: string, { args }: TailwindClass) {
-	const match = matchNegativeArbitraryValue(args);
+function tryReplaceNegativeArbitraryValue(classname: string, { baseClass }: TailwindClass) {
+	const match = matchNegativeArbitraryValue(baseClass);
 	if (!match || !NEGATIVE_UTILITIES.has(match.baseClass)) {
 		return;
 	}
-	return classname.replace(args, `-${match.baseClass}-[${match.value}]`);
+	return classname.replace(baseClass, `-${match.baseClass}-[${match.value}]`);
 }
 
 const noUnnecessaryNegativeArbitraryValue = defineRule({

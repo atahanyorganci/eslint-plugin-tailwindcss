@@ -26,7 +26,7 @@ const noArbitraryValue = defineRule({
 
 				for (const classname of classnames) {
 					const parsed = parseClassName(config, classname);
-					if (parsed.isExternal || !ARBITRARY_VALUE_REGEX.test(parsed.args)) {
+					if (parsed.isExternal || !ARBITRARY_VALUE_REGEX.test(parsed.baseClass)) {
 						continue;
 					}
 					report({
