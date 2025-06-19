@@ -1,7 +1,7 @@
 import { createParseClassname } from "../tailwind-merge.js";
 import { createVisitor, defineRule, splitClassValueToParts } from "../util.js";
 
-const COMBINABLE = /^(?<baseClass>w|h|mx|my|px|py)-(?<value>.+)$/;
+const COMBINABLE = /^-?(?<baseClass>w|h|mx|my|px|py|mt|ml|mr|mb)-(?<value>.+)$/;
 
 function matchCombinableClass(classname: string) {
 	const match = classname.match(COMBINABLE);
@@ -15,6 +15,8 @@ function matchCombinableClass(classname: string) {
 const HALF_PAIRS = {
 	h: { pair: "w", shorthand: "size" },
 	mx: { pair: "my", shorthand: "m" },
+	mt: { pair: "mb", shorthand: "my" },
+	ml: { pair: "mr", shorthand: "mx" },
 	px: { pair: "py", shorthand: "p" },
 } as Record<string, { pair: string; shorthand: string }>;
 const PAIRS: Record<string, { pair: string; shorthand: string }> = Object.fromEntries(Object.entries(HALF_PAIRS).flatMap(([key, value]) => [[key, value] as const, [value, key] as const]));
