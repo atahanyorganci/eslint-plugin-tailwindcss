@@ -1,6 +1,6 @@
 import type { ESLint } from "eslint";
 import { beforeAll, describe, expect, it } from "vitest";
-import { loadEslint } from "../fixtures/eslint.js";
+import { loadEslint, loadEslintWithPrefix } from "../fixtures/eslint.js";
 
 describe("`no-custom-classname`", () => {
 	let eslint: ESLint;
@@ -211,5 +211,31 @@ describe("`no-custom-classname`", () => {
 		expect(result.messages[0].message).toContain("x");
 		expect(result.messages[1].message).toContain("y");
 		expect(result.messages[2].message).toContain("z");
+	});
+
+	it("should handle custom prefix", async () => {
+		const eslintWithPrefix = loadEslintWithPrefix({
+			rules: {
+				"tailwindcss/no-custom-classname": "error",
+			},
+		});
+		const code = `
+			<div className="custom-class tw:custom-class tw:px-4" />
+		`;
+		const [result] = await eslintWithPrefix.lintText(code, { filePath: "test.tsx" });
+		expect(result.messages).toHaveLength(2);
+		expect(result.messages[0].message).toContain("custom-class");
+		expect(result.messages[1].message).toContain("tw:custom-class");
+	});
+
+	it("should handle extra prefix", async () => {
+		const code = `tw:px-4`;
+		const eslint = loadEslintWithPrefix({
+			rules: {
+				"tailwindcss/no-custom-classname": "error",
+			},
+		});
+		const [result] = await eslint.lintText(code, { filePath: "test.tsx" });
+		expect(result.messages).toHaveLength(0);
 	});
 });
